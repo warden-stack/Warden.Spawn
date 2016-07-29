@@ -5,7 +5,11 @@ namespace Warden.Spawn.Watchers.Web
 {
     public class WebWatcherSpawnConfiguration : IWatcherSpawnConfiguration
     {
-        public string Url { get; }
+        public string Url { get; protected set; }
+
+        protected WebWatcherSpawnConfiguration()
+        {
+        }
 
         public WebWatcherSpawnConfiguration(string url)
         {

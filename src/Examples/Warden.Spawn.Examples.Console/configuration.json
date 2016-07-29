@@ -1,0 +1,11 @@
+﻿{
+  "wardenName": "Warden Spawn",
+  "watchers": [
+    {
+      "type": "Web",
+      "configuration": {
+        "url":  "http://www.google.com" 
+      }  
+    }
+  ]  
+}

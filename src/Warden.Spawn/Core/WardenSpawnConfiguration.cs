@@ -4,9 +4,13 @@ namespace Warden.Spawn.Core
 {
     public class WardenSpawnConfiguration : IWardenSpawnConfiguration
     {
-        public string WardenName { get; }
-        public IEnumerable<IWatcherSpawnConfiguration> Watchers { get; }
-        public IEnumerable<IIntegrationSpawnConfiguration> Integrations { get; }
+        public string WardenName { get; protected set; }
+        public IEnumerable<IWatcherSpawnConfiguration> Watchers { get; protected set; }
+        public IEnumerable<IIntegrationSpawnConfiguration> Integrations { get; protected set; }
+
+        protected WardenSpawnConfiguration()
+        {
+        }
 
         public WardenSpawnConfiguration(string wardenName,
             IEnumerable<IWatcherSpawnConfiguration> watchers,
