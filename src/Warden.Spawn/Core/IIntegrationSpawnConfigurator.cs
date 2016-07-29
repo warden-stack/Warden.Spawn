@@ -2,8 +2,7 @@
 
 namespace Warden.Spawn.Core
 {
-    public interface IIntegrationSpawnConfigurator<in T> : IConfigurator where T : IIntegrationSpawnConfiguration
+    public interface IIntegrationSpawnConfigurator<in T> : IConfigurator<T, IIntegration> where T : IIntegrationSpawnConfiguration
     {
-        IIntegration Configure(T configuration);
     }
 }

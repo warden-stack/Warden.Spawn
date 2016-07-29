@@ -4,7 +4,7 @@
     {
       "type": "Web",
       "configuration": {
-        "url":  "http://www.google.com" 
+        "url": "http://www.google.com"
       }  
     }
   ]  

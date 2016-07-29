@@ -4,6 +4,7 @@ namespace Warden.Spawn.Core
 {
     public class WardenSpawnConfiguration : IWardenSpawnConfiguration
     {
+        public string Name => "Warden";
         public string WardenName { get; protected set; }
         public IEnumerable<IWatcherSpawnConfiguration> Watchers { get; protected set; }
         public IEnumerable<IIntegrationSpawnConfiguration> Integrations { get; protected set; }

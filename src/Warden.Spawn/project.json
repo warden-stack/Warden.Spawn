@@ -3,7 +3,7 @@
   "description": "Warden Spawn allows to create the Warden instance by using human readable configuration files.",
   "authors": [ "Piotr Gankiewicz" ],
   "packOptions": {
-    "tags": [ "Warden" ],
+    "tags": [ "Warden", "Warden Spawn" ],
     "projectUrl": "https://getwarden.net",
     "licenseUrl": "https://github.com/warden-stack/Warden-Spawn/blob/master/LICENSE"
   },
@@ -12,13 +12,13 @@
     "System.Linq": "4.1.0",
     "Newtonsoft.Json": "9.0.1"
   },
-    "frameworks": {
-      "net461": {},
-      "netcoreapp1.0": {
-        "imports": [
-          "dotnet5.6",
-          "dnxcore50"
-        ]
-      }
+  "frameworks": {
+    "net461": {},
+    "netcoreapp1.0": {
+      "imports": [
+        "dotnet5.6",
+        "dnxcore50"
+      ]
     }
+  }
 }

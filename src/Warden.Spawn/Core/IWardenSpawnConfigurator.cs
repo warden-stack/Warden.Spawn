@@ -1,7 +1,6 @@
 ﻿namespace Warden.Spawn.Core
 {
-    public interface IWardenSpawnConfigurator
+    public interface IWardenSpawnConfigurator : IConfigurator<IWardenSpawnConfiguration, IWardenSpawn>
     {
-        IWardenSpawn Configure(IWardenSpawnConfiguration configuration);
     }
 }

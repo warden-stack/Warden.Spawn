@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Warden.Core;
 using Warden.Integrations;
 using Warden.Watchers;
@@ -16,17 +18,25 @@ namespace Warden.Spawn.Core
             IEnumerable<IIntegration> integrations)
         {
             _wardenName = wardenName;
-            _watchers = watchers;
-            _integrations = integrations;
+            _watchers = watchers ?? Enumerable.Empty<IWatcher>();
+            _integrations = integrations ?? Enumerable.Empty<IIntegration>();
         }
 
         public IWarden Spawn()
         {
             var wardenConfiguration = WardenConfiguration
-                .Create()
-                .Build();
+                .Create();
 
-            return WardenInstance.Create(_wardenName, wardenConfiguration);
+            foreach (var watcher in _watchers)
+            {
+                wardenConfiguration.AddWatcher(watcher);
+            }
+            foreach (var integration in _integrations)
+            {
+                wardenConfiguration.AddIntegration(integration);
+            }
+
+            return WardenInstance.Create(_wardenName, wardenConfiguration.Build());
         }
     }
 }

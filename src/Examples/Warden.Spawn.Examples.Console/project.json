@@ -1,21 +1,20 @@
 ﻿{
-  "version": "1.0.0-*",
+  "version": "1.0.0",
+  "description": "Example of Warden Spawn Console Application.",
+  "authors": [ "Piotr Gankiewicz" ],
+  "packOptions": {
+    "tags": [ "Warden", "Warden Spawn" ],
+    "projectUrl": "https://getwarden.net",
+    "licenseUrl": "https://github.com/warden-stack/Warden/blob/master/LICENSE"
+  },
   "buildOptions": {
     "emitEntryPoint": true
   },
-
   "dependencies": {
-    "Microsoft.NETCore.App": {
-      "type": "platform",
-      "version": "1.0.0"
-    },
     "Warden.Spawn": "1.0.0",
     "Warden.Spawn.Watchers.Web": "1.0.0"
   },
-
   "frameworks": {
-    "netcoreapp1.0": {
-      "imports": "dnxcore50"
-    }
+    "net461": {}
   }
 }
