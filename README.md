@@ -7,4 +7,4 @@
 > Define "health checks" for your applications, resources and
 > infrastructure. Keep your **Warden** on the watch.
 
-#### **This repository contains Warden Spawn - a set of tools which allow to Create your [Warden](https://github.com/warden-stack/Warden) instance by using human readable configuration files.**
+#### **This repository contains Warden Spawn - a set of tools which allow to create the [Warden](https://github.com/warden-stack/Warden) instance by using human readable configuration files.**
