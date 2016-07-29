@@ -15,8 +15,9 @@ namespace Warden.Spawn.Examples.Console
             var integrationConfigurations = new List<IIntegrationSpawnConfiguration>();
             var spawnConfiguration = new WardenSpawnConfiguration("Warden Spawn",
                 watcherConfigurations, integrationConfigurations);
-            var spawn = new WardenSpawn();
-            var warden = spawn.Spawn(spawnConfiguration);
+            var spawnConfigurator = new WardenSpawnConfigurator();
+            var spawn = spawnConfigurator.Configure(spawnConfiguration);
+            var warden = spawn.Spawn();
             System.Console.WriteLine($"Warden: '{warden.Name}' has been created.");
         }
     }

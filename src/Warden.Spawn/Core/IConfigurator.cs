@@ -1,7 +1,7 @@
 ﻿namespace Warden.Spawn.Core
 {
     //Marker interface
-    public interface IIntegrationSpawnConfiguration : IConfiguration
+    public interface IConfigurator
     {
     }
 }

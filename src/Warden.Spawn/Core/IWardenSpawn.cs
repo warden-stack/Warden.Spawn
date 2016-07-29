@@ -2,6 +2,6 @@
 {
     public interface IWardenSpawn
     {
-        IWarden Spawn(IWardenSpawnConfiguration configuration);
+        IWarden Spawn();
     }
 }

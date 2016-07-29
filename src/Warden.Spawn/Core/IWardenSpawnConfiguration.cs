@@ -2,7 +2,7 @@
 
 namespace Warden.Spawn.Core
 {
-    public interface IWardenSpawnConfiguration
+    public interface IWardenSpawnConfiguration : IConfiguration
     {
         string WardenName { get; }
         IEnumerable<IWatcherSpawnConfiguration> Watchers { get; }
