@@ -1,0 +1,24 @@
+﻿{
+  "version": "1.0.0",
+  "description": "Warden Spawn Web Watcher extension.",
+  "authors": [ "Piotr Gankiewicz" ],
+  "packOptions": {
+    "tags": [ "Warden" ],
+    "projectUrl": "https://getwarden.net",
+    "licenseUrl": "https://github.com/warden-stack/Warden-Spawn/blob/master/LICENSE"
+  },
+  "dependencies": {
+    "Warden": "1.2.1",
+    "Warden.Spawn": "1.0.0",
+    "Warden.Watchers.Web": "1.2.1"
+  },
+  "frameworks": {
+    "net461": { },
+    "netcoreapp1.0": {
+      "imports": [
+        "dotnet5.6",
+        "dnxcore50"
+      ]
+    }
+  }
+}

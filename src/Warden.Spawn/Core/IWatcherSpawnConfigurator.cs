@@ -2,7 +2,7 @@
 
 namespace Warden.Spawn.Core
 {
-    public interface IWatcherConfigurator<in T> where T : IWatcherConfiguration
+    public interface IWatcherSpawnConfigurator<in T>
     {
         IWatcher Configure(T configuration);
     }
