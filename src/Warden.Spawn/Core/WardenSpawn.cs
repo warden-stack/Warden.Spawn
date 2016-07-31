@@ -15,7 +15,7 @@ namespace Warden.Spawn.Core
 
         public WardenSpawn(string wardenName, 
             IEnumerable<IWatcher> watchers, 
-            IEnumerable<IIntegration> integrations)
+            IEnumerable<IIntegration> integrations = null)
         {
             _wardenName = wardenName;
             _watchers = watchers ?? Enumerable.Empty<IWatcher>();

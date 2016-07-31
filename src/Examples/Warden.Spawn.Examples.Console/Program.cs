@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Warden.Spawn.Core;
@@ -11,22 +10,22 @@ namespace Warden.Spawn.Examples.Console
     {
         public static void Main(string[] args)
         {
-            var watcherConfigurationTypes = new Dictionary<string, Type>
+            var watcherConfigurations = new List<IConfigurationType>
             {
-                ["Web"] = typeof(WebWatcherSpawnConfiguration)
+                WebWatcherSpawnConfiguration.Type
             };
-            var integrationConfigurationTypes = new Dictionary<string, Type>();
-            var spawnConfigurationReader = new WardenSpawnJsonConfigurationReader(watcherConfigurationTypes,
-                integrationConfigurationTypes);
-            var configurationFile = File.ReadAllText("configuration.json");
-            var spawnConfiguration = spawnConfigurationReader.Read(configurationFile);
-            var extensions = new List<IExtension>
+            var configurationReader = new WardenSpawnJsonConfigurationReader(watcherConfigurations);
+            var configurationInput = File.ReadAllText("configuration.json");
+            var configuration = configurationReader.Read(configurationInput);
+
+            var watcherConfigurators = new List<IConfiguratorType>
             {
-                new Extension("Web", ExtensionType.Watcher, typeof(WebWatcherSpawnConfigurator))
+                WebWatcherSpawnConfigurator.Type
             };
-            var spawnConfigurator = new WardenSpawnConfigurator(extensions);
-            var spawn = spawnConfigurator.Configure(spawnConfiguration);
+            var configurator = new WardenSpawnConfigurator(watcherConfigurators);
+            var spawn = configurator.Configure(configuration);
             var warden = spawn.Spawn();
+
             System.Console.WriteLine($"Warden: '{warden.Name}' has been created and started monitoring.");
             Task.WaitAll(warden.StartAsync());
         }

@@ -1,11 +1,29 @@
 ﻿{
   "wardenName": "Warden Spawn",
-  "watchers": [
-    {
+  "watchers": [{
       "type": "Web",
       "configuration": {
         "url": "http://www.google.com"
-      }  
+      },
+      "hooks": {
+        "name": "onCompletedAsync",
+        "actions": [
+          {
+            "type": "integration",
+            "integration": "sendGrid",
+            "checkResult": "invalid",
+            "action": {
+              "name": "sendEmailAsync",
+              "params": [
+                {
+                  "name": "message",
+                  "value": "Web watcher has returned invalid result."
+                }
+              ]
+            }
+          }
+        ]
+      }
     }
-  ]  
+  ]
 }

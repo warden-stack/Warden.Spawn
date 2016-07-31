@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -7,8 +8,8 @@ namespace Warden.Spawn.Core
 {
     public class WardenSpawnJsonConfigurationReader : IConfigurationReader<IWardenSpawnConfiguration>
     {
-        private readonly IDictionary<string, Type> _watcherConfigurationTypes;
-        private readonly IDictionary<string, Type> _integrationConfigurationTypes;
+        private readonly IEnumerable<IConfigurationType> _watcherConfigurationTypes;
+        private readonly IEnumerable<IConfigurationType> _integrationConfigurationTypes;
         private readonly JsonSerializerSettings _jsonSerializerSettings;
 
         private readonly JsonSerializerSettings _defaultJsonSerializerSettings = new JsonSerializerSettings
@@ -29,12 +30,12 @@ namespace Warden.Spawn.Core
             }
         };
 
-        public WardenSpawnJsonConfigurationReader(IDictionary<string, Type> watcherConfigurationTypes,
-            IDictionary<string, Type> integrationConfigurationTypes,
+        public WardenSpawnJsonConfigurationReader(IEnumerable<IConfigurationType> watcherConfigurationTypes,
+            IEnumerable<IConfigurationType> integrationConfigurationTypes = null,
             JsonSerializerSettings jsonSerializerSettings = null)
         {
-            _watcherConfigurationTypes = watcherConfigurationTypes;
-            _integrationConfigurationTypes = integrationConfigurationTypes;
+            _watcherConfigurationTypes = watcherConfigurationTypes ?? Enumerable.Empty<IConfigurationType>();
+            _integrationConfigurationTypes = integrationConfigurationTypes ?? Enumerable.Empty<IConfigurationType>();
             _jsonSerializerSettings = jsonSerializerSettings ?? _defaultJsonSerializerSettings;
         }
 
@@ -56,9 +57,13 @@ namespace Warden.Spawn.Core
 
             foreach (var watcher in watchers)
             {
-                var watcherType = _watcherConfigurationTypes[watcher.type.ToString()];
+                var configuration = _watcherConfigurationTypes
+                    .FirstOrDefault(x => x.Name.Equals(watcher.type.ToString()));
+                if (configuration == null)
+                    continue;
+
                 var watcherConfigurationText = JsonConvert.SerializeObject(watcher.configuration);
-                var watcherConfiguration = JsonConvert.DeserializeObject(watcherConfigurationText, watcherType);
+                var watcherConfiguration = JsonConvert.DeserializeObject(watcherConfigurationText, configuration.Type);
 
                 yield return watcherConfiguration;
             }
@@ -72,9 +77,14 @@ namespace Warden.Spawn.Core
 
             foreach (var integration in integrations)
             {
-                var integrationType = _integrationConfigurationTypes[integration.type.ToString()];
+                var configuration = _integrationConfigurationTypes.FirstOrDefault(x =>
+                    x.Name.Equals(integration.type.ToString()));
+                if (configuration == null)
+                    continue;
+
                 var integrationConfigurationText = JsonConvert.SerializeObject(integration.configuration);
-                var integrationConfiguration = JsonConvert.DeserializeObject(integrationConfigurationText, integrationType);
+                var integrationConfiguration = JsonConvert.DeserializeObject(integrationConfigurationText,
+                    configuration.Type);
 
                 yield return integrationConfiguration;
             }
