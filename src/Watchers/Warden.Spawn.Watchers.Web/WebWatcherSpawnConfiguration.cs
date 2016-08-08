@@ -1,13 +1,13 @@
 ﻿using System;
-using Warden.Spawn.Core;
+using Warden.Spawn.Configurations;
 
 namespace Warden.Spawn.Watchers.Web
 {
     public class WebWatcherSpawnConfiguration : IWatcherSpawnConfiguration
     {
         public string Name => "Web";
-        public static IConfigurationType Type => new ConfigurationType(typeof(WebWatcherSpawnConfiguration), "Web");
         public string Url { get; protected set; }
+        public Type ConfiguratorType => typeof(WebWatcherSpawnConfigurator);
 
         protected WebWatcherSpawnConfiguration()
         {
@@ -20,5 +20,6 @@ namespace Warden.Spawn.Watchers.Web
 
             Url = url;
         }
+
     }
 }

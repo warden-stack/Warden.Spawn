@@ -1,4 +1,4 @@
-﻿using Warden.Spawn.Core;
+﻿using Warden.Spawn.Configurations;
 using Warden.Watchers;
 using Warden.Watchers.Web;
 
