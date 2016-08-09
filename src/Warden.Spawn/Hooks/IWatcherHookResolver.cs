@@ -2,20 +2,20 @@ using System;
 
 namespace Warden.Spawn.Hooks
 {
-    public interface IWatcherHookActionResolver
+    public interface IWatcherHookResolver
     {
-        string Action { get; }
         IWatcherHooksResolver Resolver { get; }
         Type ConfigurationType { get; }
+        string Action { get; }
     }
 
-    public class WatcherHookActionResolver : IWatcherHookActionResolver
+    public class WatcherHookResolver : IWatcherHookResolver
     {
-        public string Action { get; }
         public IWatcherHooksResolver Resolver { get; }
         public Type ConfigurationType { get; }
+        public string Action { get; }
 
-        public WatcherHookActionResolver(IWatcherHooksResolver resolver,
+        public WatcherHookResolver(IWatcherHooksResolver resolver,
             Type configurationType, string action = "")
         {
             Resolver = resolver;

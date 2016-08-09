@@ -8,6 +8,6 @@ namespace Warden.Spawn.Configurations
         string WardenName { get; }
         IEnumerable<IWatcherSpawnWithHooksConfiguration> Watchers { get; }
         IEnumerable<IIntegrationSpawnConfiguration> Integrations { get; }
-        IEnumerable<IWatcherHookActionResolver> WatcherHookResolvers { get; }
+        IEnumerable<IWatcherHookResolver> WatcherHookResolvers { get; }
     }
 }

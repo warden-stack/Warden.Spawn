@@ -11,11 +11,11 @@ namespace Warden.Spawn.Configurations
 {
     public class WardenSpawnConfigurator : IWardenSpawnConfigurator
     {
-        private readonly IEnumerable<IConfigurationWithConfigurator> _configurationWithConfigurators;
+        private readonly IEnumerable<IConfigurableTypes> _configurableTypes;
 
-        public WardenSpawnConfigurator(IEnumerable<IConfigurationWithConfigurator> configurationWithConfigurators)
+        protected WardenSpawnConfigurator(IEnumerable<IConfigurableTypes> configurableTypes)
         {
-            _configurationWithConfigurators = configurationWithConfigurators;
+            _configurableTypes = configurableTypes;
         }
 
         public IWardenSpawn Configure(IWardenSpawnConfiguration configuration)
@@ -23,9 +23,9 @@ namespace Warden.Spawn.Configurations
             var watchersWithHooks = new List<IWatcherWithHooks>();
             foreach (var watcher in configuration.Watchers)
             {
-                var configuratorType = _configurationWithConfigurators
-                    .FirstOrDefault(x => x.ConfigurationType == watcher.Configuration.GetType())
-                    ?.ConfiguratorType;
+                var configuratorType = _configurableTypes
+                    .FirstOrDefault(x => x.Configuration == watcher.Configuration.GetType())
+                    ?.Configurator;
                 if(configuratorType == null)
                     continue;
 
@@ -44,7 +44,7 @@ namespace Warden.Spawn.Configurations
 
         private Action<WatcherHooksConfiguration.Builder> ConfigureHooks(
             IEnumerable<IWatcherHookSpawnConfiguration> hookSpawnConfigurations,
-            IEnumerable<IWatcherHookActionResolver> watcherHookResolvers)
+            IEnumerable<IWatcherHookResolver> watcherHookResolvers)
         {
             Expression<Action<IWardenCheckResult>> onCompleted = null;
             Expression<Func<IWardenCheckResult, Task>> onCompletedAsync = null;
@@ -70,6 +70,28 @@ namespace Warden.Spawn.Configurations
                  .OnCompletedAsync(onCompletedAsync);
 
             return hooks;
+        }
+
+        public static Builder Create() => new Builder();
+
+        public class Builder
+        {
+            private readonly ISet<IConfigurableTypes> _configurableTypes = new HashSet<IConfigurableTypes>();
+
+            public Builder With(Func<IConfigurableTypes> configurableTypes)
+            {
+                if (configurableTypes == null)
+                {
+                    throw new ArgumentNullException("Configurable types can not be null.",
+                        nameof(configurableTypes));
+                }
+
+                _configurableTypes.Add(configurableTypes());
+
+                return this;
+            }
+
+            public WardenSpawnConfigurator Build() => new WardenSpawnConfigurator(_configurableTypes);
         }
     }
 }

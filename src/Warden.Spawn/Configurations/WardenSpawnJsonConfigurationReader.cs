@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Warden.Spawn.Hooks;
@@ -10,9 +9,9 @@ namespace Warden.Spawn.Configurations
 {
     public class WardenSpawnJsonConfigurationReader : IConfigurationReader<IWardenSpawnConfiguration>
     {
-        private readonly IEnumerable<IWatcherHookActionResolver> _watcherHookResolvers;
-        private readonly IEnumerable<IExtensionType> _watcherConfigurationTypes;
-        private readonly IEnumerable<IExtensionType> _integrationConfigurationTypes;
+        private readonly IEnumerable<IWatcherHookResolver> _watcherHookResolvers;
+        private readonly IEnumerable<IExtension> _watchers;
+        private readonly IEnumerable<IExtension> _integrations;
         private readonly JsonSerializerSettings _jsonSerializerSettings;
 
         private readonly JsonSerializerSettings _defaultJsonSerializerSettings = new JsonSerializerSettings
@@ -33,14 +32,14 @@ namespace Warden.Spawn.Configurations
             }
         };
 
-        public WardenSpawnJsonConfigurationReader(IEnumerable<IExtensionType> watcherConfigurationTypes,
-            IEnumerable<IExtensionType> integrationConfigurationTypes,
-            IEnumerable<IWatcherHookActionResolver> watcherHookResolvers,
+        protected WardenSpawnJsonConfigurationReader(IEnumerable<IExtension> watchers,
+            IEnumerable<IExtension> integrations,
+            IEnumerable<IWatcherHookResolver> watcherHookResolvers,
             JsonSerializerSettings jsonSerializerSettings = null)
         {
-            _watcherConfigurationTypes = watcherConfigurationTypes ?? Enumerable.Empty<IExtensionType>();
-            _integrationConfigurationTypes = integrationConfigurationTypes ?? Enumerable.Empty<IExtensionType>();
-            _watcherHookResolvers = watcherHookResolvers ?? Enumerable.Empty<IWatcherHookActionResolver>(); ;
+            _watchers = watchers ?? Enumerable.Empty<IExtension>();
+            _integrations = integrations ?? Enumerable.Empty<IExtension>();
+            _watcherHookResolvers = watcherHookResolvers ?? Enumerable.Empty<IWatcherHookResolver>(); ;
             _jsonSerializerSettings = jsonSerializerSettings ?? _defaultJsonSerializerSettings;
         }
 
@@ -62,8 +61,8 @@ namespace Warden.Spawn.Configurations
 
             foreach (var watcher in watchers)
             {
-                var configuration = _watcherConfigurationTypes
-                    .FirstOrDefault(x => x.Name.Equals(watcher.type.ToString()));
+                var configuration = _watchers
+                    .FirstOrDefault(x => x.Name.ToLowerInvariant().Equals(watcher.type.ToString().ToLowerInvariant()));
                 if (configuration == null)
                     continue;
 
@@ -76,7 +75,7 @@ namespace Warden.Spawn.Configurations
                         as IEnumerable<WatcherHookSpawnConfiguration>;
                 foreach (var hookConfig in hooksConfigurations)
                 {
-                    var resolver = _watcherHookResolvers.FirstOrDefault(x => x.Action.ToLowerInvariant() == hookConfig.Action.ToLowerInvariant());
+                    var resolver = _watcherHookResolvers.FirstOrDefault(x => x.Action.ToLowerInvariant().Equals(hookConfig.Action.ToLowerInvariant()));
                     if(resolver == null)
                         continue;
 
@@ -95,7 +94,7 @@ namespace Warden.Spawn.Configurations
 
             foreach (var integration in integrations)
             {
-                var configuration = _integrationConfigurationTypes.FirstOrDefault(x =>
+                var configuration = _integrations.FirstOrDefault(x =>
                     x.Name.Equals(integration.type.ToString()));
                 if (configuration == null)
                     continue;
@@ -106,6 +105,72 @@ namespace Warden.Spawn.Configurations
 
                 yield return integrationConfiguration;
             }
+        }
+
+        public static Builder Create() => new Builder();
+
+        public class Builder
+        {
+            private readonly ISet<IWatcherHookResolver> _watcherHookResolvers = new HashSet<IWatcherHookResolver>();
+            private readonly ISet<IExtension> _watchers = new HashSet<IExtension>();
+            private readonly ISet<IExtension> _integrations = new HashSet<IExtension>();
+            private JsonSerializerSettings _jsonSerializerSettings;
+
+            public Builder WithWatcher(Func<IExtension> watcher)
+            {
+                if (watcher == null)
+                {
+                    throw new ArgumentNullException("Watcher can not be null.",
+                        nameof(watcher));
+                }
+
+                _watchers.Add(watcher());
+
+                return this;
+            }
+
+            public Builder WithIntegration(Func<IExtension> integration)
+            {
+                if (integration == null)
+                {
+                    throw new ArgumentNullException("Integration can not be null.",
+                        nameof(integration));
+                }
+
+                _integrations.Add(integration());
+
+                return this;
+            }
+
+            public Builder WithWatcherHooksResolver(Func<IWatcherHookResolver> watcherHookResolver)
+            {
+                if (watcherHookResolver == null)
+                {
+                    throw new ArgumentNullException("Watcher hooks resolver can not be null.",
+                        nameof(watcherHookResolver));
+                }
+
+                _watcherHookResolvers.Add(watcherHookResolver());
+
+                return this;
+            }
+
+            public Builder WithSerializerSettings(Func<JsonSerializerSettings> jsonSerializerSettings)
+            {
+                if (jsonSerializerSettings == null)
+                {
+                    throw new ArgumentNullException("JSON serializer settings can not be null.",
+                        nameof(jsonSerializerSettings));
+                }
+
+                _jsonSerializerSettings = jsonSerializerSettings();
+
+                return this;
+            }
+
+            public WardenSpawnJsonConfigurationReader Build()
+                => new WardenSpawnJsonConfigurationReader(_watchers, _integrations,
+                    _watcherHookResolvers, _jsonSerializerSettings);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Warden.Spawn.Hooks;
 
 namespace Warden.Spawn.Configurations
@@ -9,10 +8,5 @@ namespace Warden.Spawn.Configurations
         string Name { get; }
         IWatcherSpawnConfiguration Configuration { get; }
         IEnumerable<IWatcherHookSpawnConfiguration> Hooks { get; }
-        Type ConfiguratorType { get; }
-
-        void Configure(string name,
-            IWatcherSpawnConfiguration configuration,
-            IEnumerable<IWatcherHookSpawnConfiguration> hooks);
     }
 }

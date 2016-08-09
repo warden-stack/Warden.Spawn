@@ -9,6 +9,10 @@ namespace Warden.Spawn.Integrations.SendGrid
 {
     public class SendGridIntegrationWatcherHooksResolver : IWatcherHooksResolver
     {
+        public static IWatcherHookResolver Resolver
+            => new WatcherHookResolver(new SendGridIntegrationWatcherHooksResolver(),
+                typeof(SendGridIntegrationSpawnConfiguration));
+
         public Expression<Action<IWatcherCheck>> OnStart()
         {
             throw new NotImplementedException();

@@ -2,17 +2,17 @@
 
 namespace Warden.Spawn.Configurations
 {
-    public class ExtensionType : IExtensionType
+    public class Extension : IExtension
     {
+        public string Name { get; }
         public Type Type { get; }
         public Type ConfigurationType { get; }
-        public string Name { get; }
 
-        public ExtensionType(Type type, Type configurationType, string name)
+        public Extension(string name, Type type, Type configurationType)
         {
+            Name = name;
             Type = type;
             ConfigurationType = configurationType;
-            Name = name;
         }
     }
 }

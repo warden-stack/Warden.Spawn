@@ -2,9 +2,9 @@
 {
     public class WardenSpawnFactoryConfiguration : IWardenSpawnFactoryConfiguration
     {
-        public IWardenSpawnConfigurator Configurator { get; }
-        public IConfigurationReader<IWardenSpawnConfiguration> ConfigurationReader { get; }
-        public string Configuration { get; }
+        public IWardenSpawnConfigurator Configurator { get; protected set; }
+        public IConfigurationReader<IWardenSpawnConfiguration> ConfigurationReader { get; protected set; }
+        public string Configuration { get; protected set; }
 
         public WardenSpawnFactoryConfiguration(IConfigurationReader<IWardenSpawnConfiguration> configurationReader, 
             IWardenSpawnConfigurator configurator, 

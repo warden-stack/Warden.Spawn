@@ -2,10 +2,10 @@
 
 namespace Warden.Spawn.Configurations
 {
-    public interface IExtensionType
+    public interface IExtension
     {
+        string Name { get; }
         Type Type { get; }
         Type ConfigurationType { get; }
-        string Name { get; }
     }
 }

@@ -2,6 +2,6 @@
 {
     public interface IWardenSpawnFactory
     {
-        IWardenSpawn Create();
+        IWardenSpawn Resolve();
     }
 }
