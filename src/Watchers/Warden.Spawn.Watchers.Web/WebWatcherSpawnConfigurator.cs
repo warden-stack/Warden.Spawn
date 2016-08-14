@@ -12,6 +12,7 @@ namespace Warden.Spawn.Watchers.Web
         {
             var watcherConfiguration = WebWatcherConfiguration
                 .Create(configuration.Url)
+                .WithTimeout(configuration.Timeout)
                 .Build();
 
             return WebWatcher.Create(watcherConfiguration);

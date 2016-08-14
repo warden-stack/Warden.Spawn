@@ -7,6 +7,7 @@ namespace Warden.Spawn.Watchers.Web
     {
         public string Name => "Web";
         public string Url { get; protected set; }
+        public TimeSpan Timeout { get; set; }
         public Type ConfiguratorType => typeof(WebWatcherSpawnConfigurator);
 
         protected WebWatcherSpawnConfiguration()
@@ -20,6 +21,5 @@ namespace Warden.Spawn.Watchers.Web
 
             Url = url;
         }
-
     }
 }

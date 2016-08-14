@@ -3,7 +3,7 @@ using Warden.Integrations;
 
 namespace Warden.Spawn.Configurations
 {
-    public interface IWardenSpawnConfigurationResolved : IConfiguration
+    public interface IWardenSpawnConfigurationInstance : IConfiguration
     {
         string WardenName { get; }
         IEnumerable<IWatcherWithHooks> Watchers { get; }

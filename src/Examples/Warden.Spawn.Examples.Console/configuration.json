@@ -1,28 +1,62 @@
 ﻿{
   "wardenName": "Warden Spawn",
+  "integrations": [
+    {
+      "type": "sendGrid",
+      "configuration": {
+        "apiKey": "xyz",
+        "sender": "spawn@getwarden.net",
+        "defaultSubject": "Monitoring",
+        "defaultMessage": "Monitoring error(s).",
+        "defaultReceivers": [ "warden-spawn@mailinator.com" ]
+      }
+    },
+    {
+      "type": "console",
+      "configuration": {
+        "defaultText": "Hello!"
+      }
+    }
+  ],
   "watchers": [
     {
       "type": "Web",
+      "name": "My Web Watcher",
       "configuration": {
-        "url": "http://www.google.com"
+        "url": "http://www.google.com",
+        "timeout": "00:00:05"
       },
       "hooks": [
         {
           "type": "onCompleted",
           "condition": "invalidCheckResult",
-          "action": "sendGridIntegration",
+          "use": "sendGrid",
           "configuration": {
-            "apiKey": "ABC",
-            "sender": "test@email.com"
+            "receivers": [ "warden-spawn2@mailinator.com" ]
           }
         },
         {
           "type": "onCompletedAsync",
           "condition": "invalidCheckResult",
-          "action": "sendGridIntegration",
+          "use": "sendGrid",
           "configuration": {
-            "apiKey": "ABC",
-            "sender": "test@email.com"
+            "subject": "Monitoring async",
+            "message": "Monitoring error(s) async."
+          }
+        },
+        {
+          "type": "onCompleted",
+          "condition": "none",
+          "use": "console",
+          "configuration": {
+          }
+        },
+        {
+          "type": "onCompletedAsync",
+          "condition": "none",
+          "use": "console",
+          "configuration": {
+            "text": "Hello async!" 
           }
         }
       ]

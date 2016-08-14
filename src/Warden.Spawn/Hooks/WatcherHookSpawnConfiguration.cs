@@ -4,7 +4,7 @@
     {
         public WatcherHookType Type { get; set; }
         public Condition Condition { get; set; }
-        public string Action { get; set; }
+        public string Use { get; set; }
         public object Configuration { get; set; }
     }
 }

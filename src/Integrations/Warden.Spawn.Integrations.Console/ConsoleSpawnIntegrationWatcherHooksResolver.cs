@@ -1,22 +1,17 @@
 ﻿using System;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Warden.Integrations.SendGrid;
 using Warden.Spawn.Hooks;
 using Warden.Watchers;
 
-namespace Warden.Spawn.Integrations.SendGrid
+namespace Warden.Spawn.Integrations.Console
 {
-    public class SendGridIntegrationWatcherHooksResolver : IWatcherHooksResolver
+    public class ConsoleSpawnIntegrationWatcherHooksResolver : IWatcherHooksResolver
     {
-        private readonly SendGridIntegration _integration;
-        private readonly SendGridSpawnIntegrationConfiguration _integrationConfiguration;
+        private readonly ConsoleSpawnIntegrationConfiguration _integrationConfiguration;
 
-        public SendGridIntegrationWatcherHooksResolver(SendGridIntegration integration, 
-            SendGridSpawnIntegrationConfiguration integrationConfiguration)
+        public ConsoleSpawnIntegrationWatcherHooksResolver(ConsoleSpawnIntegrationConfiguration integrationConfiguration)
         {
-            _integration = integration;
             _integrationConfiguration = integrationConfiguration;
         }
 
@@ -62,40 +57,28 @@ namespace Warden.Spawn.Integrations.SendGrid
 
         public Expression<Action<IWardenCheckResult>> OnCompleted(object configuration)
         {
-            var config = configuration as SendGridSpawnIntegrationWatcherHooksConfiguration;
+            var config = configuration as ConsoleSpawnIntegrationWatcherHooksConfiguration;
             if (config == null)
                 throw new InvalidOperationException();
 
-            var subject = string.IsNullOrWhiteSpace(config.Subject)
-                ? _integrationConfiguration.DefaultSubject
-                : config.Subject;
-            var message = string.IsNullOrWhiteSpace(config.Message)
-                ? _integrationConfiguration.DefaultMessage
-                : config.Message;
-            var receivers = config.Receivers == null || !config.Receivers.Any()
-                ? _integrationConfiguration.DefaultReceivers
-                : config.Receivers;
+            var text = string.IsNullOrWhiteSpace(config.Text) ? _integrationConfiguration.DefaultText : config.Text;
+            Expression<Action<IWardenCheckResult>> expression =
+                x => System.Console.WriteLine(text);
 
-            return x => Task.Factory.StartNew(() => _integration.SendEmailAsync(subject, message, receivers.ToArray()));
+            return expression;
         }
 
         public Expression<Func<IWardenCheckResult, Task>> OnCompletedAsync(object configuration)
         {
-            var config = configuration as SendGridSpawnIntegrationWatcherHooksConfiguration;
+            var config = configuration as ConsoleSpawnIntegrationWatcherHooksConfiguration;
             if (config == null)
                 throw new InvalidOperationException();
 
-            var subject = string.IsNullOrWhiteSpace(config.Subject)
-                ? _integrationConfiguration.DefaultSubject
-                : config.Subject;
-            var message = string.IsNullOrWhiteSpace(config.Message)
-                ? _integrationConfiguration.DefaultMessage
-                : config.Message;
-            var receivers = config.Receivers == null || !config.Receivers.Any()
-                ? _integrationConfiguration.DefaultReceivers
-                : config.Receivers;
+            var text = string.IsNullOrWhiteSpace(config.Text) ? _integrationConfiguration.DefaultText : config.Text;
+            Expression<Func<IWardenCheckResult, Task>> expression =
+                x => Task.Factory.StartNew(() => System.Console.WriteLine(text));
 
-            return x => _integration.SendEmailAsync(subject, message, receivers.ToArray());
+            return expression;
         }
 
         public Expression<Action<Exception>> OnError()

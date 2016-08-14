@@ -1,0 +1,17 @@
+﻿{
+  "version": "1.0.0",
+  "description": "Warden Spawn SendGrid integration extension.",
+  "authors": [ "Piotr Gankiewicz" ],
+  "packOptions": {
+    "tags": [ "Warden", "Warden Spawn" ],
+    "projectUrl": "https://getwarden.net",
+    "licenseUrl": "https://github.com/warden-stack/Warden-Spawn/blob/master/LICENSE"
+  },
+  "dependencies": {
+    "Warden": "1.2.1",
+    "Warden.Spawn": "1.0.0"
+  },
+  "frameworks": {
+    "net461": { }
+  }
+}

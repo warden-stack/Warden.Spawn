@@ -5,9 +5,9 @@ namespace Warden.Spawn
 {
     public class WardenSpawn : IWardenSpawn
     {
-        private readonly IWardenSpawnConfigurationResolved _configuration;
+        private readonly IWardenSpawnConfigurationInstance _configuration;
 
-        public WardenSpawn(IWardenSpawnConfigurationResolved configuration)
+        public WardenSpawn(IWardenSpawnConfigurationInstance configuration)
         {
             _configuration = configuration;
         }
@@ -17,13 +17,13 @@ namespace Warden.Spawn
             var wardenConfiguration = WardenConfiguration
                 .Create();
 
-            foreach (var watcherWithHooks in _configuration.Watchers)
-            {
-                wardenConfiguration.AddWatcher(watcherWithHooks.Watcher, watcherWithHooks.Hooks);
-            }
             foreach (var integration in _configuration.Integrations)
             {
                 wardenConfiguration.AddIntegration(integration);
+            }
+            foreach (var watcherWithHooks in _configuration.Watchers)
+            {
+                wardenConfiguration.AddWatcher(watcherWithHooks.Watcher, watcherWithHooks.Hooks);
             }
 
             return WardenInstance.Create(_configuration.WardenName, wardenConfiguration.Build());

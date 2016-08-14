@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Warden.Spawn.Configurations;
-using Warden.Spawn.Hooks;
+using Warden.Spawn.Integrations.Console;
 using Warden.Spawn.Integrations.SendGrid;
 using Warden.Spawn.Watchers.Web;
 
@@ -12,15 +11,15 @@ namespace Warden.Spawn.Examples.Console
     {
         public static void Main(string[] args)
         {
-            var configurationReader = WardenSpawnJsonConfigurationReader
+            var configurationReader = WardenSpawnConfigurationReader
                 .Create()
-                .WithWatcher(() => WebWatcherSpawn.Extension)
-                .WithWatcherHooksResolver(() => SendGridIntegrationWatcherHooksResolver.Resolver)
+                .WithWatcher<WebWatcherSpawn>()
+                .WithIntegration<ConsoleSpawnIntegration>()
+                .WithIntegration<SendGridSpawnIntegration>()
                 .Build();
 
             var configurator = WardenSpawnConfigurator
                 .Create()
-                .With(() => WebWatcherSpawn.Type)
                 .Build();
 
             var factory = WardenSpawnFactory

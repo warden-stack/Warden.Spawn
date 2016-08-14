@@ -2,5 +2,6 @@
 {
     public interface IWatcherSpawnConfiguration : IConfiguration
     {
+        string Name { get; }
     }
 }

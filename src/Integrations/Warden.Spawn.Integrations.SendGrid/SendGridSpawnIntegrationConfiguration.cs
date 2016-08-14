@@ -1,6 +1,9 @@
-﻿namespace Warden.Spawn.Integrations.SendGrid
+﻿using System.Collections.Generic;
+using Warden.Spawn.Configurations;
+
+namespace Warden.Spawn.Integrations.SendGrid
 {
-    public class SendGridIntegrationSpawnConfiguration
+    public class SendGridSpawnIntegrationConfiguration : ISpawnIntegrationConfiguration
     {
         /// <summary>
         /// Username of the SendGrid account.
@@ -18,5 +21,9 @@
         public string ApiKey { get; set; }
 
         public string Sender { get; set; }
+
+        public string DefaultMessage { get; set; }
+        public string DefaultSubject { get; set; }
+        public IEnumerable<string> DefaultReceivers { get; set; }
     }
 }

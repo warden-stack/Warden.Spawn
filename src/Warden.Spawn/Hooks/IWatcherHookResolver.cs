@@ -6,25 +6,25 @@ namespace Warden.Spawn.Hooks
     {
         IWatcherHooksResolver Resolver { get; }
         Type ConfigurationType { get; }
-        string Action { get; }
+        string Use { get; }
     }
 
     public class WatcherHookResolver : IWatcherHookResolver
     {
         public IWatcherHooksResolver Resolver { get; }
         public Type ConfigurationType { get; }
-        public string Action { get; }
+        public string Use { get; }
 
         public WatcherHookResolver(IWatcherHooksResolver resolver,
-            Type configurationType, string action = "")
+            Type configurationType, string use = "")
         {
             Resolver = resolver;
             ConfigurationType = configurationType;
             var contractName = typeof(IWatcherHooksResolver).Name.Substring(1);
-            action = string.IsNullOrWhiteSpace(action)
+            use = string.IsNullOrWhiteSpace(use)
                 ? resolver.GetType().Name.Replace(contractName, string.Empty)
-                : action;
-            Action = action;
+                : use;
+            Use = use;
         }
     }
 }

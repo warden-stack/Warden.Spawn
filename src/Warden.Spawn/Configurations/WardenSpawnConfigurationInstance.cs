@@ -4,14 +4,14 @@ using Warden.Integrations;
 
 namespace Warden.Spawn.Configurations
 {
-    class WardenSpawnConfigurationResolved : IWardenSpawnConfigurationResolved
+    public class WardenSpawnConfigurationInstance : IWardenSpawnConfigurationInstance
     {
         public string Name => "Warden";
         public string WardenName { get; protected set; }
         public IEnumerable<IWatcherWithHooks> Watchers { get; protected set; }
         public IEnumerable<IIntegration> Integrations { get; protected set; }
 
-        public WardenSpawnConfigurationResolved(
+        public WardenSpawnConfigurationInstance(
             string wardenName,
             IEnumerable<IWatcherWithHooks> watchers,
             IEnumerable<IIntegration> integrations)

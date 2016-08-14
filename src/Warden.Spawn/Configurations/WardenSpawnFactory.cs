@@ -1,5 +1,4 @@
 ﻿using System;
-using Warden.Spawn.Hooks;
 
 namespace Warden.Spawn.Configurations
 {
