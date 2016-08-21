@@ -10,6 +10,7 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
 {
     public class WardenSpawnJsonConfigurationReader : IConfigurationReader<IWardenSpawnConfiguration>
     {
+        private readonly ICredentialsManager _credentialsManager;
         private readonly IEnumerable<Type> _watchers;
         private readonly IEnumerable<Type> _integrations;
         private readonly JsonSerializerSettings _jsonSerializerSettings;
@@ -32,10 +33,12 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
             }
         };
 
-        protected WardenSpawnJsonConfigurationReader(IEnumerable<Type> watchers,
+        protected WardenSpawnJsonConfigurationReader(ICredentialsManager credentialsManager,
+            IEnumerable<Type> watchers,
             IEnumerable<Type> integrations,
             JsonSerializerSettings jsonSerializerSettings = null)
         {
+            _credentialsManager = credentialsManager;
             _watchers = watchers ?? Enumerable.Empty<Type>();
             _integrations = integrations ?? Enumerable.Empty<Type>();
             _jsonSerializerSettings = jsonSerializerSettings ?? _defaultJsonSerializerSettings;
@@ -51,7 +54,8 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
             return new WardenSpawnConfiguration(wardenName, watchers, integrations);
         }
 
-        private IEnumerable<IWatcherSpawnWithHooksConfiguration> ResolveWatchers(dynamic watchers, IEnumerable<ISpawnIntegration> integrations)
+        private IEnumerable<IWatcherSpawnWithHooksConfiguration> ResolveWatchers(dynamic watchers,
+            IEnumerable<ISpawnIntegration> integrations)
         {
             if (watchers == null)
                 yield break;
@@ -59,7 +63,7 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
             foreach (var watcher in watchers)
             {
                 var configuration = _watchers.FirstOrDefault(x => x.Name.ToLowerInvariant()
-                .Replace("watcherspawn", string.Empty)
+                    .Replace("watcherspawn", string.Empty)
                     .Equals(watcher.type.ToString().ToLowerInvariant()));
                 if (configuration == null)
                     continue;
@@ -71,18 +75,20 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
                 var watcherConfiguration = JsonConvert.DeserializeObject(watcherConfigurationText,
                     configurationType) as IWatcherSpawnConfiguration;
                 var hooksText = JsonConvert.SerializeObject(watcher.hooks);
-                var hooksConfigurations = JsonConvert.DeserializeObject<IEnumerable<WatcherHookSpawnConfiguration>>(hooksText)
+                var hooksConfigurations =
+                    JsonConvert.DeserializeObject<IEnumerable<WatcherHookSpawnConfiguration>>(hooksText)
                         as IEnumerable<WatcherHookSpawnConfiguration>;
                 foreach (var hookConfig in hooksConfigurations)
                 {
                     var integration = integrations.FirstOrDefault(x =>
                         x.Name.ToLowerInvariant().Equals(hookConfig.Use.ToLowerInvariant()));
-                    if(integration == null)
+                    if (integration == null)
                         continue;
 
                     var @integrationNamespace = integration.GetType().Namespace;
                     var watcherHooksConfigurationName = integration.GetType().Name + "WatcherHooksConfiguration";
-                    var watcherHooksConfigurationType = Type.GetType($"{@integrationNamespace}.{watcherHooksConfigurationName},{@integrationNamespace}");
+                    var watcherHooksConfigurationType =
+                        Type.GetType($"{@integrationNamespace}.{watcherHooksConfigurationName},{@integrationNamespace}");
                     var cfg = JsonConvert.SerializeObject(hookConfig.Configuration);
                     hookConfig.Configuration = JsonConvert.DeserializeObject(cfg, watcherHooksConfigurationType);
                 }
@@ -100,7 +106,7 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
             {
                 var configuration = _integrations.FirstOrDefault(x =>
                     x.Name.ToLowerInvariant().Replace("spawnintegration", string.Empty)
-                    .Equals(integration.type.ToString().ToLowerInvariant()));
+                        .Equals(integration.type.ToString().ToLowerInvariant()));
                 if (configuration == null)
                     continue;
 
@@ -122,9 +128,23 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
 
         public class Builder
         {
+            private ICredentialsManager _credentialsManager;
             private readonly IList<Type> _watchers = new List<Type>();
             private readonly IList<Type> _integrations = new List<Type>();
             private JsonSerializerSettings _jsonSerializerSettings;
+
+            public Builder WithEncrypter(Func<ICredentialsManager> encrypter)
+            {
+                if (encrypter == null)
+                {
+                    throw new ArgumentNullException("Encrypter can not be null.",
+                        nameof(encrypter));
+                }
+
+                _credentialsManager = encrypter();
+
+                return this;
+            }
 
             public Builder WithWatcher<T>()
             {
@@ -133,7 +153,7 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
                 return this;
             }
 
-            public Builder WithIntegration<T>() where T: ISpawnIntegration
+            public Builder WithIntegration<T>() where T : ISpawnIntegration
             {
                 _integrations.Add(typeof(T));
 
@@ -154,7 +174,8 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
             }
 
             public WardenSpawnJsonConfigurationReader Build()
-                => new WardenSpawnJsonConfigurationReader(_watchers, _integrations, _jsonSerializerSettings);
+                => new WardenSpawnJsonConfigurationReader(_credentialsManager,
+                    _watchers, _integrations, _jsonSerializerSettings);
         }
     }
 }

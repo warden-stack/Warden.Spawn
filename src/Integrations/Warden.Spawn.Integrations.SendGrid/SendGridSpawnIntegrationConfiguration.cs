@@ -8,16 +8,19 @@ namespace Warden.Spawn.Integrations.SendGrid
         /// <summary>
         /// Username of the SendGrid account.
         /// </summary>
+        [CredentialValue]
         public string Username { get; set; }
 
         /// <summary>
         /// Password of the SendGrid account.
         /// </summary>
+        [CredentialValue]
         public string Password { get; set; }
 
         /// <summary>
         /// API key of the SendGrid account.
         /// </summary>
+        [CredentialValue]
         public string ApiKey { get; set; }
 
         public string Sender { get; set; }
@@ -25,5 +28,6 @@ namespace Warden.Spawn.Integrations.SendGrid
         public string DefaultMessage { get; set; }
         public string DefaultSubject { get; set; }
         public IEnumerable<string> DefaultReceivers { get; set; }
+        public IEnumerable<Credential> Credentials { get; }
     }
 }

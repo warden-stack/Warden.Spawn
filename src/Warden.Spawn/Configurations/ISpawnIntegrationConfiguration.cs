@@ -1,7 +1,9 @@
-﻿namespace Warden.Spawn.Configurations
+﻿using System.Collections.Generic;
+
+namespace Warden.Spawn.Configurations
 {
-    //Marker interface
     public interface ISpawnIntegrationConfiguration : IConfiguration
     {
+        IEnumerable<Credential> Credentials { get; }
     }
 }
