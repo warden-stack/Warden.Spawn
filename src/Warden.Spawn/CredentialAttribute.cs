@@ -3,7 +3,7 @@
 namespace Warden.Spawn
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class CredentialValueAttribute : Attribute
+    public class CredentialAttribute : Attribute
     {
     }
 }

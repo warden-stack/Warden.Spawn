@@ -5,12 +5,13 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Warden.Spawn.Configurations;
 using Warden.Spawn.Hooks;
+using Warden.Spawn.Security;
 
 namespace Warden.Spawn.Extensions.JsonConfigurationReader
 {
     public class WardenSpawnJsonConfigurationReader : IConfigurationReader<IWardenSpawnConfiguration>
     {
-        private readonly ICredentialsManager _credentialsManager;
+        private ICredentialsManager _credentialsManager;
         private readonly IEnumerable<Type> _watchers;
         private readonly IEnumerable<Type> _integrations;
         private readonly JsonSerializerSettings _jsonSerializerSettings;
@@ -88,9 +89,10 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
                     var @integrationNamespace = integration.GetType().Namespace;
                     var watcherHooksConfigurationName = integration.GetType().Name + "WatcherHooksConfiguration";
                     var watcherHooksConfigurationType =
-                        Type.GetType($"{@integrationNamespace}.{watcherHooksConfigurationName},{@integrationNamespace}");
+                        Type.GetType($"{@integrationNamespace}.{watcherHooksConfigurationName},{integrationNamespace}");
                     var cfg = JsonConvert.SerializeObject(hookConfig.Configuration);
                     hookConfig.Configuration = JsonConvert.DeserializeObject(cfg, watcherHooksConfigurationType);
+                    _credentialsManager.SetConfiguration(hookConfig.Configuration);
                 }
 
                 yield return new WatcherSpawnWithHooksConfiguration(watcherConfiguration, hooksConfigurations);
@@ -116,6 +118,7 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
                 var configurationType = Type.GetType($"{@namespace}.{configurationName},{@namespace}");
                 var integrationConfiguration = JsonConvert.DeserializeObject(integrationConfigurationText,
                     configurationType) as ISpawnIntegrationConfiguration;
+                _credentialsManager.SetConfiguration(integrationConfiguration);
 
                 var integrationInstance = Activator.CreateInstance(configuration,
                     integrationConfiguration) as ISpawnIntegration;
@@ -133,15 +136,15 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
             private readonly IList<Type> _integrations = new List<Type>();
             private JsonSerializerSettings _jsonSerializerSettings;
 
-            public Builder WithEncrypter(Func<ICredentialsManager> encrypter)
+            public Builder WithCredentialsManager(Func<ICredentialsManager> credentialsManager)
             {
-                if (encrypter == null)
+                if (credentialsManager == null)
                 {
-                    throw new ArgumentNullException("Encrypter can not be null.",
-                        nameof(encrypter));
+                    throw new ArgumentNullException("Credentials manager can not be null.",
+                        nameof(credentialsManager));
                 }
 
-                _credentialsManager = encrypter();
+                _credentialsManager = credentialsManager();
 
                 return this;
             }

@@ -7,9 +7,7 @@ namespace Warden.Spawn.Integrations.Console
     {
         public string DefaultText { get; set; }
 
-        [CredentialValue]
+        [Credential]
         public string Password { get; set; }
-
-        public IEnumerable<Credential> Credentials { get; }
     }
 }

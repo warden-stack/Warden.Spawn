@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Warden.Spawn.Configurations;
 
 namespace Warden.Spawn.Watchers.Web
@@ -9,7 +8,6 @@ namespace Warden.Spawn.Watchers.Web
         public string Name => "Web";
         public string Url { get; protected set; }
         public TimeSpan Timeout { get; set; }
-        public IEnumerable<Credential> Credentials { get; }
 
         protected WebWatcherSpawnConfiguration()
         {

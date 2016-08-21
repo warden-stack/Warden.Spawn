@@ -13,6 +13,7 @@
   "dependencies": {
     "Warden.Spawn": "1.0.0",
     "Warden.Spawn.Extensions.JsonConfigurationReader": "1.0.0",
+    "Warden.Spawn.Extensions.Security": "1.0.0",
     "Warden.Spawn.Extensions.SqlTde": "1.0.0",
     "Warden.Spawn.Integrations.SendGrid": "1.0.0",
     "Warden.Spawn.Integrations.Console": "1.0.0",
