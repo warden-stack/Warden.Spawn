@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Warden.Spawn.Configurations;
 using Warden.Spawn.Hooks;
 
-namespace Warden.Spawn.Configurations
+namespace Warden.Spawn.Extensions.JsonConfigurationReader
 {
-    public class WardenSpawnConfigurationReader : IConfigurationReader<IWardenSpawnConfiguration>
+    public class WardenSpawnJsonConfigurationReader : IConfigurationReader<IWardenSpawnConfiguration>
     {
         private readonly IEnumerable<Type> _watchers;
         private readonly IEnumerable<Type> _integrations;
@@ -31,7 +32,7 @@ namespace Warden.Spawn.Configurations
             }
         };
 
-        protected WardenSpawnConfigurationReader(IEnumerable<Type> watchers,
+        protected WardenSpawnJsonConfigurationReader(IEnumerable<Type> watchers,
             IEnumerable<Type> integrations,
             JsonSerializerSettings jsonSerializerSettings = null)
         {
@@ -152,8 +153,8 @@ namespace Warden.Spawn.Configurations
                 return this;
             }
 
-            public WardenSpawnConfigurationReader Build()
-                => new WardenSpawnConfigurationReader(_watchers, _integrations, _jsonSerializerSettings);
+            public WardenSpawnJsonConfigurationReader Build()
+                => new WardenSpawnJsonConfigurationReader(_watchers, _integrations, _jsonSerializerSettings);
         }
     }
 }
