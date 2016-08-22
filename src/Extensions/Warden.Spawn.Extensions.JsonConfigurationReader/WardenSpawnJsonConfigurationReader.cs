@@ -48,14 +48,15 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
         public IWardenSpawnConfiguration Read(string configuration)
         {
             var spawnConfiguration = JsonConvert.DeserializeObject<dynamic>(configuration, _jsonSerializerSettings);
-            var integrations = ResolveIntegrations(spawnConfiguration.integrations);
-            var watchers = ResolveWatchers(spawnConfiguration.watchers, integrations);
+            var integrations = ResolveIntegrations(spawnConfiguration.wardenName.ToString(), spawnConfiguration.integrations);
+            var watchers = ResolveWatchers(spawnConfiguration.wardenName.ToString(), spawnConfiguration.watchers, integrations);
             var wardenName = spawnConfiguration.wardenName.ToString();
 
             return new WardenSpawnConfiguration(wardenName, watchers, integrations);
         }
 
-        private IEnumerable<IWatcherSpawnWithHooksConfiguration> ResolveWatchers(dynamic watchers,
+        private IEnumerable<IWatcherSpawnWithHooksConfiguration> ResolveWatchers(string wardenName,
+            dynamic watchers,
             IEnumerable<ISpawnIntegration> integrations)
         {
             if (watchers == null)
@@ -92,14 +93,15 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
                         Type.GetType($"{@integrationNamespace}.{watcherHooksConfigurationName},{integrationNamespace}");
                     var cfg = JsonConvert.SerializeObject(hookConfig.Configuration);
                     hookConfig.Configuration = JsonConvert.DeserializeObject(cfg, watcherHooksConfigurationType);
-                    _credentialsConfigurator.SetConfiguration(hookConfig.Configuration);
+                    _credentialsConfigurator.SetConfiguration(wardenName, hookConfig.Configuration);
                 }
 
                 yield return new WatcherSpawnWithHooksConfiguration(watcherConfiguration, hooksConfigurations);
             }
         }
 
-        private IEnumerable<ISpawnIntegration> ResolveIntegrations(dynamic integrations)
+        private IEnumerable<ISpawnIntegration> ResolveIntegrations(string wardenName, 
+            dynamic integrations)
         {
             if (integrations == null)
                 yield break;
@@ -118,7 +120,7 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
                 var configurationType = Type.GetType($"{@namespace}.{configurationName},{@namespace}");
                 var integrationConfiguration = JsonConvert.DeserializeObject(integrationConfigurationText,
                     configurationType) as ISpawnIntegrationConfiguration;
-                _credentialsConfigurator.SetConfiguration(integrationConfiguration);
+                _credentialsConfigurator.SetConfiguration(wardenName, integrationConfiguration);
 
                 var integrationInstance = Activator.CreateInstance(configuration,
                     integrationConfiguration) as ISpawnIntegration;

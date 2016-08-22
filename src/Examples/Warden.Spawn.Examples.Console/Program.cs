@@ -19,8 +19,9 @@ namespace Warden.Spawn.Examples.Console
             var credentialValue = "test";
             var connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=WardenSpawn;Integrated Security=True";
             var credentialsManager = new SqlTdeCredentialsManager(connectionString, encrypter);
-            credentialsManager.Remove(credentialName);
-            credentialsManager.Save(credentialName, credentialValue);
+            var wardenName = "Warden Spawn";
+            credentialsManager.Remove(wardenName, credentialName);
+            credentialsManager.Save(wardenName, credentialName, credentialValue);
             var credentialsConfigurator = new CredentialsConfigurator(credentialsManager);
 
             var configurationReader = WardenSpawnJsonConfigurationReader

@@ -2,6 +2,6 @@
 {
     public interface ICredentialsConfigurator
     {
-        void SetConfiguration(object configuration);
+        void SetConfiguration(string warden, object configuration, string watcher = "", string integration = "", string hook = "");
     }
 }

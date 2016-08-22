@@ -1,4 +1,5 @@
-﻿using System.Data.SqlClient;
+﻿using System;
+using System.Data.SqlClient;
 using System.Linq;
 using Dapper;
 using Warden.Spawn.Security;
@@ -20,22 +21,24 @@ namespace Warden.Spawn.Extensions.SqlTde
             _tableName = tableName;
         }
 
-        public string Get(string name)
+        public string Get(string warden, string name, string watcher = "", string integration = "", string hook = "")
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
                 name = name.ToLowerInvariant();
                 var credential = connection
-                    .Query<Credential>($"select value,salt from {_tableName} where name=@name",
-                        new {name})
+                    .Query<Credential>($"select value,salt,watcher,integration,hook from {_tableName} " +
+                                       "where warden=@warden and name=@name and watcher=@watcher " +
+                                       "and integration=@integration and hook=@hook",
+                        new {warden, name, watcher, integration, hook})
                     .FirstOrDefault();
 
                 return credential == null ? string.Empty : _encrypter.Decrypt(credential.Value, credential.Salt);
             }
         }
 
-        public void Save(string name, string value)
+        public void Save(string warden, string name, string value, string watcher = "", string integration = "", string hook = "")
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -44,20 +47,21 @@ namespace Warden.Spawn.Extensions.SqlTde
                 var salt = _encrypter.GetSalt();
                 var encryptedValue = _encrypter.Encrypt(value, salt);
                 var affectedResults = connection
-                    .Execute($"insert into {_tableName} values (@name, @value, @salt)",
-                        new {name, value = encryptedValue, salt});
+                    .Execute($"insert into {_tableName} values (@warden, @name, @value, @salt, @watcher, @integration, @hook, @createdAt)",
+                        new { warden, name, value = encryptedValue, salt, watcher, integration, hook, createdAt = DateTime.UtcNow });
             }
         }
 
-        public void Remove(string name)
+        public void Remove(string warden, string name, string watcher = "", string integration = "", string hook = "")
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
                 name = name.ToLowerInvariant();
                 var affectedResults = connection
-                    .Execute($"delete from {_tableName} where name=@name",
-                        new {name});
+                    .Execute($"delete from {_tableName} where warden=@warden and name=@name " +
+                             "and watcher=@watcher and integration=@integration and hook=@hook",
+                        new {warden, name, watcher, integration, hook});
             }
         }
 
@@ -65,6 +69,9 @@ namespace Warden.Spawn.Extensions.SqlTde
         {
             public string Value { get; set; }
             public string Salt { get; set; }
+            public string Watcher { get; set; }
+            public string Integration { get; set; }
+            public string Hook { get; set; }
         }
     }
 }
