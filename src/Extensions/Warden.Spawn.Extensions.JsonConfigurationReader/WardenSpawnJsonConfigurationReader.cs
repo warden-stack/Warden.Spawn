@@ -64,9 +64,10 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
 
             foreach (var watcher in watchers)
             {
+                var watcherName = watcher.type.ToString().ToLowerInvariant();
                 var configuration = _watchers.FirstOrDefault(x => x.Name.ToLowerInvariant()
                     .Replace("watcherspawn", string.Empty)
-                    .Equals(watcher.type.ToString().ToLowerInvariant()));
+                    .Equals(watcherName));
                 if (configuration == null)
                     continue;
 
@@ -76,24 +77,27 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
                 var configurationType = Type.GetType($"{@namespace}.{configurationName},{@namespace}");
                 var watcherConfiguration = JsonConvert.DeserializeObject(watcherConfigurationText,
                     configurationType) as IWatcherSpawnConfiguration;
+                _credentialsConfigurator.SetConfiguration(wardenName, watcherConfiguration, watcher: watcherName);
                 var hooksText = JsonConvert.SerializeObject(watcher.hooks);
-                var hooksConfigurations =
-                    JsonConvert.DeserializeObject<IEnumerable<WatcherHookSpawnConfiguration>>(hooksText)
+                var hooksConfigurations = JsonConvert.DeserializeObject<IEnumerable<WatcherHookSpawnConfiguration>>(hooksText)
                         as IEnumerable<WatcherHookSpawnConfiguration>;
                 foreach (var hookConfig in hooksConfigurations)
                 {
+                    var integrationName = hookConfig.Use.ToLowerInvariant();
                     var integration = integrations.FirstOrDefault(x =>
-                        x.Name.ToLowerInvariant().Equals(hookConfig.Use.ToLowerInvariant()));
+                        x.Name.ToLowerInvariant().Equals(integrationName));
                     if (integration == null)
                         continue;
 
-                    var @integrationNamespace = integration.GetType().Namespace;
+                    var integrationNamespace = integration.GetType().Namespace;
                     var watcherHooksConfigurationName = integration.GetType().Name + "WatcherHooksConfiguration";
                     var watcherHooksConfigurationType =
                         Type.GetType($"{@integrationNamespace}.{watcherHooksConfigurationName},{integrationNamespace}");
                     var cfg = JsonConvert.SerializeObject(hookConfig.Configuration);
+                    var hookName = hookConfig.Type.ToString();
                     hookConfig.Configuration = JsonConvert.DeserializeObject(cfg, watcherHooksConfigurationType);
-                    _credentialsConfigurator.SetConfiguration(wardenName, hookConfig.Configuration);
+                    _credentialsConfigurator.SetConfiguration(wardenName, hookConfig.Configuration, 
+                        integration: integrationName, watcher: watcherName, hook: hookName);
                 }
 
                 yield return new WatcherSpawnWithHooksConfiguration(watcherConfiguration, hooksConfigurations);
@@ -108,9 +112,10 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
 
             foreach (var integration in integrations)
             {
+                var integrationName = integration.type.ToString().ToLowerInvariant();
                 var configuration = _integrations.FirstOrDefault(x =>
                     x.Name.ToLowerInvariant().Replace("spawnintegration", string.Empty)
-                        .Equals(integration.type.ToString().ToLowerInvariant()));
+                        .Equals(integrationName));
                 if (configuration == null)
                     continue;
 
@@ -120,8 +125,7 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
                 var configurationType = Type.GetType($"{@namespace}.{configurationName},{@namespace}");
                 var integrationConfiguration = JsonConvert.DeserializeObject(integrationConfigurationText,
                     configurationType) as ISpawnIntegrationConfiguration;
-                _credentialsConfigurator.SetConfiguration(wardenName, integrationConfiguration);
-
+                _credentialsConfigurator.SetConfiguration(wardenName, integrationConfiguration, integration: integrationName);
                 var integrationInstance = Activator.CreateInstance(configuration,
                     integrationConfiguration) as ISpawnIntegration;
 

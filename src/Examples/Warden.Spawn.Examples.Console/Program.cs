@@ -15,13 +15,13 @@ namespace Warden.Spawn.Examples.Console
         public static void Main(string[] args)
         {
             var encrypter = new Encrypter("abcdefgh12345678");
-            var credentialName = "ConsoleSpawnIntegrationConfiguration.Password";
+            var credentialName = "Password";
             var credentialValue = "test";
             var connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=WardenSpawn;Integrated Security=True";
             var credentialsManager = new SqlTdeCredentialsManager(connectionString, encrypter);
             var wardenName = "Warden Spawn";
-            credentialsManager.Remove(wardenName, credentialName);
-            credentialsManager.Save(wardenName, credentialName, credentialValue);
+            var integrationName = "console";
+            credentialsManager.Save(wardenName, credentialName, credentialValue, integration: integrationName);
             var credentialsConfigurator = new CredentialsConfigurator(credentialsManager);
 
             var configurationReader = WardenSpawnJsonConfigurationReader

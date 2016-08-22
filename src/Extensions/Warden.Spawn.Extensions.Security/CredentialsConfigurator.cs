@@ -23,8 +23,7 @@ namespace Warden.Spawn.Extensions.Security
 
             foreach (var property in properties)
             {
-                var name = $"{configurationType.Name}.{property.Name}";
-                var value = _credentialsManager.Get(warden, name, watcher, integration, hook);
+                var value = _credentialsManager.Get(warden, property.Name, watcher, integration, hook);
                 if (string.IsNullOrWhiteSpace(value))
                     continue;
 

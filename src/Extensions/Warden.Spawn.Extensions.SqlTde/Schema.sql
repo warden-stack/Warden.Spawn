@@ -1,6 +1,6 @@
-﻿CREATE TABLE Credentials
+﻿CREATE TABLE Configurations
 (
-	Id bigint primary key identity not null,
+	Hash nvarchar(400) primary key not null,
 	Warden nvarchar(MAX) not null,
 	Name nvarchar(MAX) not null,
 	Value nvarchar(MAX) not null,

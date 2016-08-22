@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Warden.Spawn.Security;
@@ -38,6 +39,24 @@ namespace Warden.Spawn.Extensions.Security
 
         public string Decrypt(string value, string salt)
             => Decrypt<AesManaged>(value, salt);
+
+
+        public string Hash(params string[] values)
+        {
+            var input = values.Aggregate((a, b) => $"{a?.ToLowerInvariant()};{b?.ToLowerInvariant()}");
+            using (var md5 = MD5.Create())
+            {
+                var inputBytes = Encoding.ASCII.GetBytes(input);
+                var hashBytes = md5.ComputeHash(inputBytes);
+                var stringBuilder = new StringBuilder();
+                foreach (var hashByte in hashBytes)
+                {
+                    stringBuilder.Append(hashByte.ToString("X2"));
+                }
+
+                return stringBuilder.ToString();
+            }
+        }
 
         private string Encrypt<T>(string value, string salt) where T : SymmetricAlgorithm, new()
         {

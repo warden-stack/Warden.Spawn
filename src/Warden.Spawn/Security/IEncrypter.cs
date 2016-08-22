@@ -5,5 +5,6 @@
         string GetSalt();
         string Decrypt(string value, string salt);
         string Encrypt(string value, string salt);
+        string Hash(params string[] values);
     }
 }
