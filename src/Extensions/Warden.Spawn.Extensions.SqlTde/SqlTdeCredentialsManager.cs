@@ -107,7 +107,9 @@ namespace Warden.Spawn.Extensions.SqlTde
         }
 
         private string Hash(string warden, string name, string watcher, string integration, string hook)
-            => _encrypter.Hash(warden, name, watcher, integration, hook);
+            => _encrypter.Hash($"{warden.ToLowerInvariant()};{name.ToLowerInvariant()};" +
+                               $"{watcher?.ToLowerInvariant()};{integration?.ToLowerInvariant()};" +
+                               $"{hook?.ToLowerInvariant()}");
 
         private class Credential
         {

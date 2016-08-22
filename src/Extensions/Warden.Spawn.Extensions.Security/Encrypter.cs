@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Warden.Spawn.Security;
@@ -41,12 +40,11 @@ namespace Warden.Spawn.Extensions.Security
             => Decrypt<AesManaged>(value, salt);
 
 
-        public string Hash(params string[] values)
+        public string Hash(string value)
         {
-            var input = values.Aggregate((a, b) => $"{a?.ToLowerInvariant()};{b?.ToLowerInvariant()}");
             using (var md5 = MD5.Create())
             {
-                var inputBytes = Encoding.ASCII.GetBytes(input);
+                var inputBytes = Encoding.ASCII.GetBytes(value);
                 var hashBytes = md5.ComputeHash(inputBytes);
                 var stringBuilder = new StringBuilder();
                 foreach (var hashByte in hashBytes)
