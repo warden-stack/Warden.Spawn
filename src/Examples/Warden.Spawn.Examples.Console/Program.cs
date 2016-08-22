@@ -18,16 +18,17 @@ namespace Warden.Spawn.Examples.Console
             var credentialName = "ConsoleSpawnIntegrationConfiguration.Password";
             var credentialValue = "test";
             var connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=WardenSpawn;Integrated Security=True";
-            var sqlTdeCredentialsManager = new SqlTdeCredentialsManager(connectionString, encrypter);
-            sqlTdeCredentialsManager.Remove(credentialName);
-            sqlTdeCredentialsManager.Save(credentialName, credentialValue);
+            var credentialsManager = new SqlTdeCredentialsManager(connectionString, encrypter);
+            credentialsManager.Remove(credentialName);
+            credentialsManager.Save(credentialName, credentialValue);
+            var credentialsConfigurator = new CredentialsConfigurator(credentialsManager);
 
             var configurationReader = WardenSpawnJsonConfigurationReader
                 .Create()
                 .WithWatcher<WebWatcherSpawn>()
                 .WithIntegration<ConsoleSpawnIntegration>()
                 .WithIntegration<SendGridSpawnIntegration>()
-                .WithCredentialsManager(() => sqlTdeCredentialsManager)
+                .WithCredentialsConfigurator(() => credentialsConfigurator)
                 .Build();
 
             var configurator = WardenSpawnConfigurator

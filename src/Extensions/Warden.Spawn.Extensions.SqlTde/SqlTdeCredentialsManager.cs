@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using System.Linq;
 using Dapper;
 using Warden.Spawn.Security;
@@ -59,25 +58,6 @@ namespace Warden.Spawn.Extensions.SqlTde
                 var affectedResults = connection
                     .Execute($"delete from {_tableName} where name=@name",
                         new {name});
-            }
-        }
-
-        public void SetConfiguration(object configuration)
-        {
-            var configurationType = configuration.GetType();
-            var properties = configurationType.GetProperties().Where(
-                prop => Attribute.IsDefined(prop, typeof(CredentialAttribute)));
-            if (!properties.Any())
-                return;
-
-            foreach (var property in properties)
-            {
-                var name = $"{configurationType.Name}.{property.Name}";
-                var value = Get(name);
-                if(string.IsNullOrWhiteSpace(value))
-                    continue;
-
-                property.SetValue(configuration, value);
             }
         }
 

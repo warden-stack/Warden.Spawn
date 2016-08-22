@@ -11,7 +11,7 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
 {
     public class WardenSpawnJsonConfigurationReader : IConfigurationReader<IWardenSpawnConfiguration>
     {
-        private ICredentialsManager _credentialsManager;
+        private readonly ICredentialsConfigurator _credentialsConfigurator;
         private readonly IEnumerable<Type> _watchers;
         private readonly IEnumerable<Type> _integrations;
         private readonly JsonSerializerSettings _jsonSerializerSettings;
@@ -34,12 +34,12 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
             }
         };
 
-        protected WardenSpawnJsonConfigurationReader(ICredentialsManager credentialsManager,
+        protected WardenSpawnJsonConfigurationReader(ICredentialsConfigurator credentialsConfigurator,
             IEnumerable<Type> watchers,
             IEnumerable<Type> integrations,
             JsonSerializerSettings jsonSerializerSettings = null)
         {
-            _credentialsManager = credentialsManager;
+            _credentialsConfigurator = credentialsConfigurator;
             _watchers = watchers ?? Enumerable.Empty<Type>();
             _integrations = integrations ?? Enumerable.Empty<Type>();
             _jsonSerializerSettings = jsonSerializerSettings ?? _defaultJsonSerializerSettings;
@@ -92,7 +92,7 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
                         Type.GetType($"{@integrationNamespace}.{watcherHooksConfigurationName},{integrationNamespace}");
                     var cfg = JsonConvert.SerializeObject(hookConfig.Configuration);
                     hookConfig.Configuration = JsonConvert.DeserializeObject(cfg, watcherHooksConfigurationType);
-                    _credentialsManager.SetConfiguration(hookConfig.Configuration);
+                    _credentialsConfigurator.SetConfiguration(hookConfig.Configuration);
                 }
 
                 yield return new WatcherSpawnWithHooksConfiguration(watcherConfiguration, hooksConfigurations);
@@ -118,7 +118,7 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
                 var configurationType = Type.GetType($"{@namespace}.{configurationName},{@namespace}");
                 var integrationConfiguration = JsonConvert.DeserializeObject(integrationConfigurationText,
                     configurationType) as ISpawnIntegrationConfiguration;
-                _credentialsManager.SetConfiguration(integrationConfiguration);
+                _credentialsConfigurator.SetConfiguration(integrationConfiguration);
 
                 var integrationInstance = Activator.CreateInstance(configuration,
                     integrationConfiguration) as ISpawnIntegration;
@@ -131,20 +131,20 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
 
         public class Builder
         {
-            private ICredentialsManager _credentialsManager;
+            private ICredentialsConfigurator _credentialsConfigurator;
             private readonly IList<Type> _watchers = new List<Type>();
             private readonly IList<Type> _integrations = new List<Type>();
             private JsonSerializerSettings _jsonSerializerSettings;
 
-            public Builder WithCredentialsManager(Func<ICredentialsManager> credentialsManager)
+            public Builder WithCredentialsConfigurator(Func<ICredentialsConfigurator> credentialsConfigurator)
             {
-                if (credentialsManager == null)
+                if (credentialsConfigurator == null)
                 {
-                    throw new ArgumentNullException("Credentials manager can not be null.",
-                        nameof(credentialsManager));
+                    throw new ArgumentNullException("Credentials configurator can not be null.",
+                        nameof(credentialsConfigurator));
                 }
 
-                _credentialsManager = credentialsManager();
+                _credentialsConfigurator = credentialsConfigurator();
 
                 return this;
             }
@@ -177,7 +177,7 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
             }
 
             public WardenSpawnJsonConfigurationReader Build()
-                => new WardenSpawnJsonConfigurationReader(_credentialsManager,
+                => new WardenSpawnJsonConfigurationReader(_credentialsConfigurator,
                     _watchers, _integrations, _jsonSerializerSettings);
         }
     }
