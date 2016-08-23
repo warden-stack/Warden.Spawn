@@ -57,28 +57,24 @@ namespace Warden.Spawn.Integrations.Console
 
         public Expression<Action<IWardenCheckResult>> OnCompleted(object configuration)
         {
-            var config = configuration as ConsoleSpawnIntegrationWatcherHooksConfiguration;
+            var config = configuration as ConsoleSpawnIntegrationHooksConfiguration;
             if (config == null)
                 throw new InvalidOperationException();
 
             var text = string.IsNullOrWhiteSpace(config.Text) ? _integrationConfiguration.DefaultText : config.Text;
-            Expression<Action<IWardenCheckResult>> expression =
-                x => System.Console.WriteLine(text);
 
-            return expression;
+            return x => System.Console.WriteLine(text);
         }
 
         public Expression<Func<IWardenCheckResult, Task>> OnCompletedAsync(object configuration)
         {
-            var config = configuration as ConsoleSpawnIntegrationWatcherHooksConfiguration;
+            var config = configuration as ConsoleSpawnIntegrationHooksConfiguration;
             if (config == null)
                 throw new InvalidOperationException();
 
             var text = string.IsNullOrWhiteSpace(config.Text) ? _integrationConfiguration.DefaultText : config.Text;
-            Expression<Func<IWardenCheckResult, Task>> expression =
-                x => Task.Factory.StartNew(() => System.Console.WriteLine(text));
 
-            return expression;
+            return x => Task.Factory.StartNew(() => System.Console.WriteLine(text));
         }
 
         public Expression<Action<Exception>> OnError()

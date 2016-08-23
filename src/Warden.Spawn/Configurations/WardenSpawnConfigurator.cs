@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
+using Warden.Core;
 using Warden.Spawn.Hooks;
 using Warden.Watchers;
 
@@ -28,21 +29,24 @@ namespace Warden.Spawn.Configurations
                     .GetRuntimeMethods()
                     .First(x => x.Name.Equals("Configure"));
                 var watcherInstance = method.Invoke(configurator, new object[] {watcher.Configuration}) as IWatcher;
-                var hooks = ConfigureHooks(watcher.Hooks, configuration.Integrations);
-                watchersWithHooks.Add(new WatcherWithHooks(watcherInstance, hooks));
+                var watcherHooks = ConfigureWatcherHooks(watcher.Hooks, configuration.Integrations);
+                watchersWithHooks.Add(new WatcherWithHooks(watcherInstance, watcherHooks));
             }
-            var spawnConfiguration = new WardenSpawnConfigurationInstance(configuration.WardenName, watchersWithHooks, null);
+
+            var wardenHooks = ConfigureHooks(configuration.Hooks, configuration.Integrations);
+            var spawnConfiguration = new WardenSpawnConfigurationInstance(configuration.WardenName, watchersWithHooks,
+                null, wardenHooks);
 
             return new WardenSpawn(spawnConfiguration);
         }
 
-        private Action<WatcherHooksConfiguration.Builder> ConfigureHooks(
-            IEnumerable<IWatcherHookSpawnConfiguration> hookSpawnConfigurations,
+        private Action<WatcherHooksConfiguration.Builder> ConfigureWatcherHooks(
+            IEnumerable<IWatcherHookSpawnConfiguration> watcherConfigurations,
             IEnumerable<ISpawnIntegration> integrations)
         {
             var onCompletedHooks = new List<Expression<Action<IWardenCheckResult>>>();
             var onCompletedAsyncHooks  = new List<Expression<Func<IWardenCheckResult, Task>>>();
-            foreach (var config in hookSpawnConfigurations)
+            foreach (var config in watcherConfigurations)
             {
                 var resolver = integrations.FirstOrDefault(x =>
                     x.Name.ToLowerInvariant() == config.Use.ToLowerInvariant());
@@ -65,6 +69,40 @@ namespace Warden.Spawn.Configurations
             Action<WatcherHooksConfiguration.Builder> hooks = x =>
                 x.OnCompleted(onCompletedHooks.ToArray())
                  .OnCompletedAsync(onCompletedAsyncHooks.ToArray());
+
+            return hooks;
+        }
+
+        private Action<WardenHooksConfiguration.Builder> ConfigureHooks(
+            IEnumerable<IWardenHookSpawnConfiguration> wardenHookConfigurations,
+            IEnumerable<ISpawnIntegration> integrations)
+        {
+            var onIterationCompletedHooks = new List<Expression<Action<IWardenIteration>>>();
+            var onIterationCompletedAsyncHooks = new List<Expression<Func<IWardenIteration, Task>>>();
+            foreach (var config in wardenHookConfigurations)
+            {
+                var resolver = integrations.FirstOrDefault(x =>
+                    x.Name.ToLowerInvariant() == config.Use.ToLowerInvariant());
+                if (resolver == null)
+                    continue;
+
+                switch (config.Type)
+                {
+                    case WardenHookType.OnIterationCompleted:
+                        var onCompleted = resolver.WardenHooksResolver.OnIterationCompleted(config.Configuration);
+                        onIterationCompletedHooks.Add(onCompleted);
+                        break;
+                    case WardenHookType.OnIterationCompletedAsync:
+                        var onCompletedAsync =
+                            resolver.WardenHooksResolver.OnIterationCompletedAsync(config.Configuration);
+                        onIterationCompletedAsyncHooks.Add(onCompletedAsync);
+                        break;
+                }
+            }
+
+            Action<WardenHooksConfiguration.Builder> hooks = x =>
+                x.OnIterationCompleted(onIterationCompletedHooks.ToArray())
+                    .OnIterationCompletedAsync(onIterationCompletedAsyncHooks.ToArray());
 
             return hooks;
         }

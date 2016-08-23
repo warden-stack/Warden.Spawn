@@ -2,7 +2,7 @@
 
 namespace Warden.Spawn.Integrations.SendGrid
 {
-    public class SendGridSpawnIntegrationWatcherHooksConfiguration
+    public class SendGridSpawnIntegrationHooksConfiguration
     {
         public string Message { get; set; }
 

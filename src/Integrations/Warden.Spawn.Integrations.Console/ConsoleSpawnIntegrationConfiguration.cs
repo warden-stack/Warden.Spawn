@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Warden.Spawn.Configurations;
+﻿using Warden.Spawn.Configurations;
 
 namespace Warden.Spawn.Integrations.Console
 {

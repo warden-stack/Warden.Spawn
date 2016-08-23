@@ -56,10 +56,27 @@
           "condition": "none",
           "use": "console",
           "configuration": {
-            "text": "Hello async!" 
+            "text": "Hello async!"
           }
         }
       ]
+    }
+  ],
+  "hooks": [
+    {
+      "type": "onIterationCompleted",
+      "condition": "invalidCheckResult",
+      "use": "console",
+      "configuration": {
+      }
+    },
+    {
+      "type": "onIterationCompletedAsync",
+      "condition": "invalidCheckResult",
+      "use": "console",
+      "configuration": {
+        "text": "Iteration hello async!"
+      }
     }
   ]
 }

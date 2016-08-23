@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Warden.Core;
 using Warden.Integrations;
 
 namespace Warden.Spawn.Configurations
@@ -10,15 +12,18 @@ namespace Warden.Spawn.Configurations
         public string WardenName { get; protected set; }
         public IEnumerable<IWatcherWithHooks> Watchers { get; protected set; }
         public IEnumerable<IIntegration> Integrations { get; protected set; }
+        public Action<WardenHooksConfiguration.Builder> Hooks { get; }
 
         public WardenSpawnConfigurationInstance(
             string wardenName,
             IEnumerable<IWatcherWithHooks> watchers,
-            IEnumerable<IIntegration> integrations)
+            IEnumerable<IIntegration> integrations, 
+            Action<WardenHooksConfiguration.Builder> hooks)
         {
             WardenName = wardenName;
             Watchers = watchers ?? Enumerable.Empty<IWatcherWithHooks>();
             Integrations = integrations ?? Enumerable.Empty<IIntegration>();
+            Hooks = hooks;
         }
     }
 }

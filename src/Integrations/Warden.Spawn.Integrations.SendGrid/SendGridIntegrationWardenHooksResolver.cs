@@ -4,63 +4,22 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Warden.Integrations.SendGrid;
 using Warden.Spawn.Hooks;
-using Warden.Watchers;
 
 namespace Warden.Spawn.Integrations.SendGrid
 {
-    public class SendGridIntegrationWatcherHooksResolver : IWatcherHooksResolver
+    public class SendGridIntegrationWardenHooksResolver : IWardenHooksResolver
     {
         private readonly SendGridIntegration _integration;
         private readonly SendGridSpawnIntegrationConfiguration _integrationConfiguration;
 
-        public SendGridIntegrationWatcherHooksResolver(SendGridIntegration integration, 
+        public SendGridIntegrationWardenHooksResolver(SendGridIntegration integration, 
             SendGridSpawnIntegrationConfiguration integrationConfiguration)
         {
             _integration = integration;
             _integrationConfiguration = integrationConfiguration;
         }
 
-        public Expression<Action<IWatcherCheck>> OnStart()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Expression<Func<IWatcherCheck, Task>> OnStartAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Expression<Action<IWardenCheckResult>> OnSuccess()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Expression<Func<IWardenCheckResult, Task>> OnSuccessAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Expression<Action<IWardenCheckResult>> OnFirstSuccess()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Expression<Func<IWardenCheckResult, Task>> OnFirstSuccessAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Expression<Action<IWardenCheckResult>> OnFailure()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Expression<Func<IWardenCheckResult, Task>> OnFailureAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Expression<Action<IWardenCheckResult>> OnCompleted(object configuration)
+        public Expression<Action<IWardenIteration>> OnIterationCompleted(object configuration)
         {
             var config = configuration as SendGridSpawnIntegrationHooksConfiguration;
             if (config == null)
@@ -79,7 +38,7 @@ namespace Warden.Spawn.Integrations.SendGrid
             return x => Task.Factory.StartNew(() => _integration.SendEmailAsync(subject, message, receivers.ToArray()));
         }
 
-        public Expression<Func<IWardenCheckResult, Task>> OnCompletedAsync(object configuration)
+        public Expression<Func<IWardenIteration, Task>> OnIterationCompletedAsync(object configuration)
         {
             var config = configuration as SendGridSpawnIntegrationHooksConfiguration;
             if (config == null)
@@ -96,26 +55,6 @@ namespace Warden.Spawn.Integrations.SendGrid
                 : config.Receivers;
 
             return x => _integration.SendEmailAsync(subject, message, receivers.ToArray());
-        }
-
-        public Expression<Action<Exception>> OnError()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Expression<Func<Exception, Task>> OnErrorAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Expression<Action<Exception>> OnFirstError()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Expression<Func<Exception, Task>> OnFirstErrorAsync()
-        {
-            throw new NotImplementedException();
         }
     }
 }

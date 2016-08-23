@@ -25,6 +25,7 @@ namespace Warden.Spawn
             {
                 wardenConfiguration.AddWatcher(watcherWithHooks.Watcher, watcherWithHooks.Hooks);
             }
+            wardenConfiguration.SetHooks(_configuration.Hooks);
 
             return WardenInstance.Create(_configuration.WardenName, wardenConfiguration.Build());
         }

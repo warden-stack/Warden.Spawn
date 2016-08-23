@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Warden.Spawn.Hooks;
 
 namespace Warden.Spawn.Configurations
 {
@@ -7,5 +8,6 @@ namespace Warden.Spawn.Configurations
         string WardenName { get; }
         IEnumerable<IWatcherSpawnWithHooksConfiguration> Watchers { get; }
         IEnumerable<ISpawnIntegration> Integrations { get; }
+        IEnumerable<IWardenHookSpawnConfiguration> Hooks { get; }
     }
 }
