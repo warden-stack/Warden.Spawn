@@ -22,6 +22,7 @@
     {
       "type": "Web",
       "name": "My Web Watcher",
+      "group": "Websites",
       "configuration": {
         "url": "http://www.google.com",
         "timeout": "00:00:05"

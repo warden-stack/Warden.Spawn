@@ -64,10 +64,12 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
 
             foreach (var watcher in watchers)
             {
-                var watcherName = watcher.type.ToString().ToLowerInvariant();
+                var watcherType = watcher.type.ToString().ToLowerInvariant();
+                var watcherName = watcher.name.ToString();
+                var watcherGroup = watcher.group.ToString();
                 var configuration = _watchers.FirstOrDefault(x => x.Name.ToLowerInvariant()
                     .Replace("watcherspawn", string.Empty)
-                    .Equals(watcherName));
+                    .Equals(watcherType));
                 if (configuration == null)
                     continue;
 
@@ -97,7 +99,7 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
                     var hookName = hookConfig.Type.ToString();
                     hookConfig.Configuration = JsonConvert.DeserializeObject(cfg, watcherHooksConfigurationType);
                     _credentialsConfigurator.SetConfiguration(wardenName, hookConfig.Configuration, 
-                        integration: integrationName, watcher: watcherName, hook: hookName);
+                        integration: integrationName, watcher: watcherType, hook: hookName);
                 }
 
                 yield return new WatcherSpawnWithHooksConfiguration(watcherConfiguration, hooksConfigurations);
