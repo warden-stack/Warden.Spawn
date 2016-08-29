@@ -8,6 +8,7 @@
     "licenseUrl": "https://github.com/warden-stack/Warden-Spawn/blob/master/LICENSE"
   },
   "dependencies": {
+    "System.Net.Http": "4.1.0"
   },
   "frameworks": {
     "net461": {}

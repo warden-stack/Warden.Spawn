@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "Warden.Spawn.Tools.Core": "1.0.0",
-    "Rebus": "0.99.73"
+    "Rebus": "0.99.73",
+    "System.Net.Http":  "4.1.0" 
   },
   "frameworks": {
     "net461": {}

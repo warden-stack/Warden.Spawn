@@ -16,14 +16,14 @@ namespace Warden.Spawn.Tools.Supervisor
             using (var activator = new BuiltinHandlerActivator())
             {
                 Console.Title = "Warden.Spawn.Tools.Supervisor";
-                activator.Register(() => new CreateWardenMessageHandler());
+                activator.Register((bus, message) => new SpawnWardenMessageHandler(bus));
                 Configure.With(activator)
                     .Logging(l => l.ColoredConsole(minLevel: LogLevel.Warn))
                     .Transport(t => t.UseMsmq("wardenspawn-supervisor"))
-                    .Routing(r => r.TypeBased().MapAssemblyOf<CreateWardenMessage>("wardenspawn-orchestrator"))
+                    .Routing(r => r.TypeBased().MapAssemblyOf<SpawnWardenMessage>("wardenspawn-orchestrator"))
                     .Start();
 
-                activator.Bus.Subscribe<CreateWardenMessage>().Wait();
+                activator.Bus.Subscribe<SpawnWardenMessage>().Wait();
                 Console.WriteLine("Press enter to quit");
                 Console.ReadLine();
             }

@@ -1,16 +1,14 @@
 ﻿namespace Warden.Spawn.Tools.Core.Messages
 {
-    public class CreateWardenMessage
+    public class SpawnWardenMessage
     {
         public string ConfigurationId { get; }
         public string Token { get; }
-        public string Region { get; }
 
-        public CreateWardenMessage(string configurationId, string token, string region)
+        public SpawnWardenMessage(string configurationId, string token)
         {
             ConfigurationId = configurationId;
             Token = token;
-            Region = region;
         }
     }
 }

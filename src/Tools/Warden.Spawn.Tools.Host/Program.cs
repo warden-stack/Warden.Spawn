@@ -6,6 +6,7 @@ using Warden.Spawn.Extensions.Security;
 using Warden.Spawn.Extensions.SqlTde;
 using Warden.Spawn.Integrations.Console;
 using Warden.Spawn.Integrations.SendGrid;
+using Warden.Spawn.Tools.Core.Services;
 using Warden.Spawn.Watchers.Web;
 
 namespace Warden.Spawn.Tools.Host
@@ -36,10 +37,13 @@ namespace Warden.Spawn.Tools.Host
                 .Create()
                 .Build();
 
+            var configurationTask = GetConfigurationAsync(string.Empty, string.Empty);
+            Task.WaitAll(configurationTask);
+
             var factory = WardenSpawnFactory
                 .Create()
                 .WithConfigurationReader(() => configurationReader)
-                .WithConfiguration(File.ReadAllText("configuration.json"))
+                .WithConfiguration(configurationTask.Result)
                 .WithConfigurator(() => configurator)
                 .Build();
 
@@ -47,6 +51,14 @@ namespace Warden.Spawn.Tools.Host
             var warden = spawn.Spawn();
             System.Console.WriteLine($"Warden: '{warden.Name}' has been created and started monitoring.");
             Task.WaitAll(warden.StartAsync());
+        }
+
+        private static async Task<string> GetConfigurationAsync(string id, string token)
+        {
+            var service = new WardenConfigurationManager("http://localhost:20899/api");
+            var configuration = await service.GetConfigurationAsync(id, token);
+
+            return configuration;
         }
     }
 }

@@ -2,8 +2,10 @@
 using Rebus.Activation;
 using Rebus.Config;
 using Rebus.Logging;
+using Rebus.Routing.TypeBased;
 using Rebus.Transport.Msmq;
 using Warden.Spawn.Tools.Core.Messages;
+using Warden.Spawn.Tools.Orchestrator.Handlers;
 
 namespace Warden.Spawn.Tools.Orchestrator
 {
@@ -14,27 +16,17 @@ namespace Warden.Spawn.Tools.Orchestrator
             using (var activator = new BuiltinHandlerActivator())
             {
                 Console.Title = "Warden.Spawn.Tools.Orchestrator";
+                activator.Register((bus, message) => new CreateWardenMessageHandler(bus));
                 Configure.With(activator)
                     .Logging(l => l.ColoredConsole(minLevel: LogLevel.Warn))
                     .Transport(t => t.UseMsmq("wardenspawn-orchestrator"))
+                    .Routing(r => r.TypeBased().MapAssemblyOf<CreateWardenMessage>("wardenspawn-api"))
                     .Start();
 
-                SendTestConfiguration(activator);
+                activator.Bus.Subscribe<CreateWardenMessage>().Wait();
                 Console.WriteLine("Press enter to quit");
                 Console.ReadLine();
             }
-        }
-
-        private static void SendTestConfiguration(BuiltinHandlerActivator activator)
-        {
-            var timer = new System.Timers.Timer();
-            timer.Elapsed += (s, e) =>
-            {
-                Console.WriteLine("Sending configuration");
-                activator.Bus.Publish(new CreateWardenMessage("Test")).Wait();
-            };
-            timer.Interval = 1000;
-            timer.Start();
         }
     }
 }
