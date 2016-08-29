@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Warden.Spawn", "Warden.Spawn\Warden.Spawn.xproj", "{57B6AA68-551A-4992-BCA2-AA05294D5EB2}"
 EndProject
@@ -41,8 +41,6 @@ EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Warden.Spawn.Tools.Supervisor", "Tools\Warden.Spawn.Tools.Supervisor\Warden.Spawn.Tools.Supervisor.xproj", "{6B256A39-BD97-4C4F-AD01-3040CA21030A}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Warden.Spawn.Tools.Core", "Tools\Warden.Spawn.Tools.Core\Warden.Spawn.Tools.Core.xproj", "{EAAB97F0-212D-4F55-B1DD-F58EF8618206}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{3C9B32A6-CB91-4C91-AACD-806BD3BBC93E}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Warden.Shared", "..\..\Warden-Shared\src\Warden.Shared\Warden.Shared.xproj", "{7408A71F-A346-4749-9017-317571A56CD1}"
 EndProject
@@ -120,6 +118,5 @@ Global
 		{97541CC3-52E6-42E4-8F10-88F66EA8DDA7} = {3CB0F79F-245A-415A-83F9-D78E04C3BCD0}
 		{6B256A39-BD97-4C4F-AD01-3040CA21030A} = {3CB0F79F-245A-415A-83F9-D78E04C3BCD0}
 		{EAAB97F0-212D-4F55-B1DD-F58EF8618206} = {3CB0F79F-245A-415A-83F9-D78E04C3BCD0}
-		{7408A71F-A346-4749-9017-317571A56CD1} = {3C9B32A6-CB91-4C91-AACD-806BD3BBC93E}
 	EndGlobalSection
 EndGlobal
