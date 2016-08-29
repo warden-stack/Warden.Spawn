@@ -11,12 +11,15 @@ namespace Warden.Spawn.Tools.Supervisor
 {
     public class Program
     {
+        private static readonly string WardenHostPath = @"D:\Projects\Warden\Repo\Warden-Spawn\src\Tools\" +
+                                                        @"Warden.Spawn.Tools.Host\bin\Debug\net461\win7-x64\Warden.Spawn.Tools.Host.exe";
+
         public static void Main(string[] args)
         {
             using (var activator = new BuiltinHandlerActivator())
             {
                 Console.Title = "Warden.Spawn.Tools.Supervisor";
-                activator.Register((bus, message) => new SpawnWardenMessageHandler(bus));
+                activator.Register((bus, message) => new SpawnWardenMessageHandler(bus, WardenHostPath));
                 Configure.With(activator)
                     .Logging(l => l.ColoredConsole(minLevel: LogLevel.Warn))
                     .Transport(t => t.UseMsmq("warden-supervisor"))
