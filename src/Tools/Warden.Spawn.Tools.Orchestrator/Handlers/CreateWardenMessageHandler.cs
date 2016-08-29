@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Rebus.Bus;
 using Rebus.Handlers;
-using Warden.Spawn.Tools.Core.Messages;
+using Warden.Shared.Messages;
 
 namespace Warden.Spawn.Tools.Orchestrator.Handlers
 {

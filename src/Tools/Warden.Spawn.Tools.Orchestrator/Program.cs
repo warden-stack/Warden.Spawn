@@ -4,7 +4,7 @@ using Rebus.Config;
 using Rebus.Logging;
 using Rebus.Routing.TypeBased;
 using Rebus.Transport.Msmq;
-using Warden.Spawn.Tools.Core.Messages;
+using Warden.Shared.Messages;
 using Warden.Spawn.Tools.Orchestrator.Handlers;
 
 namespace Warden.Spawn.Tools.Orchestrator
