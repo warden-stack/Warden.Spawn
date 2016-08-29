@@ -1,5 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Warden.Spawn.Configurations;
 using Warden.Spawn.Extensions.JsonConfigurationReader;
 using Warden.Spawn.Extensions.Security;
@@ -15,6 +18,16 @@ namespace Warden.Spawn.Tools.Host
     {
         public static void Main(string[] args)
         {
+            var configurationId = args.FirstOrDefault();
+            if (string.IsNullOrWhiteSpace(configurationId))
+                throw new ArgumentException("Missing configuration id.");
+
+            var token = args.Skip(1).FirstOrDefault();
+            if (string.IsNullOrWhiteSpace(token))
+                throw new ArgumentException("Missing token.");
+
+            Console.WriteLine($"Configuration id: {configurationId}, token: {token}.");
+
             var encrypter = new Encrypter("abcdefgh12345678");
             var credentialName = "Password";
             var credentialValue = "test";
@@ -37,7 +50,7 @@ namespace Warden.Spawn.Tools.Host
                 .Create()
                 .Build();
 
-            var configurationTask = GetConfigurationAsync(string.Empty, string.Empty);
+            var configurationTask = GetConfigurationAsync(configurationId, token);
             Task.WaitAll(configurationTask);
 
             var factory = WardenSpawnFactory
@@ -55,10 +68,12 @@ namespace Warden.Spawn.Tools.Host
 
         private static async Task<string> GetConfigurationAsync(string id, string token)
         {
-            var service = new WardenConfigurationManager("http://localhost:20899/api");
+            var service = new WardenConfigurationManager("http://localhost:20899/api/");
             var configuration = await service.GetConfigurationAsync(id, token);
+            if (configuration == null)
+                return string.Empty;
 
-            return configuration;
+            return JsonConvert.SerializeObject(configuration);
         }
     }
 }

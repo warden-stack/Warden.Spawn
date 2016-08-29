@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace Warden.Spawn.Tools.Core.Services
 {
@@ -16,11 +17,15 @@ namespace Warden.Spawn.Tools.Core.Services
             };
         }
 
-        public async Task<string> GetConfigurationAsync(string id, string token)
+        public async Task<object> GetConfigurationAsync(string id, string token)
         {
-            var configuration = await _httpClient.GetAsync($"/wardens/configurations/{id}?token={token}");
+            var response = await _httpClient.GetAsync($"wardenconfigurations/{id}");
+            if (!response.IsSuccessStatusCode)
+                return null;
 
-            return await configuration.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync();
+
+            return JsonConvert.DeserializeObject(content);
         }
     }
 }

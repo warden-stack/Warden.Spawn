@@ -18,7 +18,7 @@ namespace Warden.Spawn.Tools.Supervisor.Handlers
 
         public async Task Handle(SpawnWardenMessage message)
         {
-            Console.WriteLine("Received configuration and spawning new Warden isntance.");
+            Console.WriteLine("Received configuration and spawning new Warden instance.");
             //TODO: Create Warden instance
         }
     }

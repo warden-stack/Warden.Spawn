@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Warden.Spawn.Tools.Host": {
+      "commandName": "Project",
+      "commandLineArgs": "test test"
+    }
+  }
+}

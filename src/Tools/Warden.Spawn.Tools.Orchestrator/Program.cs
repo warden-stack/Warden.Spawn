@@ -19,8 +19,8 @@ namespace Warden.Spawn.Tools.Orchestrator
                 activator.Register((bus, message) => new CreateWardenMessageHandler(bus));
                 Configure.With(activator)
                     .Logging(l => l.ColoredConsole(minLevel: LogLevel.Warn))
-                    .Transport(t => t.UseMsmq("wardenspawn-orchestrator"))
-                    .Routing(r => r.TypeBased().MapAssemblyOf<CreateWardenMessage>("wardenspawn-api"))
+                    .Transport(t => t.UseMsmq("warden-orchestrator"))
+                    .Routing(r => r.TypeBased().MapAssemblyOf<CreateWardenMessage>("warden-api"))
                     .Start();
 
                 activator.Bus.Subscribe<CreateWardenMessage>().Wait();
