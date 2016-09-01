@@ -12,5 +12,6 @@ namespace Warden.Spawn.Configurations
         IEnumerable<IWatcherWithHooks> Watchers { get; }
         IEnumerable<IIntegration> Integrations { get; }
         Action<WardenHooksConfiguration.Builder> Hooks { get; }
+        Action<WatcherHooksConfiguration.Builder> GlobalWatcherHooks { get; }
     }
 }

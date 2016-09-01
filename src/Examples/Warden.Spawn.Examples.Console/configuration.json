@@ -79,5 +79,16 @@
         "text": "Iteration hello async!"
       }
     }
+  ],
+  "globalWatcherHooks": [
+    {
+      "type": "onCompletedAsync",
+      "condition": "invalidCheckResult",
+      "use": "sendGrid",
+      "configuration": {
+        "subject": "Monitoring async global hook",
+        "message": "Monitoring error(s) global hook async."
+      }
+    }
   ]
 }

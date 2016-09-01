@@ -5,6 +5,6 @@
         WatcherHookType Type { get; }
         Condition Condition { get; }
         string Use { get; }
-        object Configuration { get; }
+        object Configuration { get; set; }
     }
 }

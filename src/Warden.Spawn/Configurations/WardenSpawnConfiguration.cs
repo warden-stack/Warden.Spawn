@@ -11,17 +11,20 @@ namespace Warden.Spawn.Configurations
         public IEnumerable<IWatcherSpawnWithHooksConfiguration> Watchers { get; protected set; }
         public IEnumerable<ISpawnIntegration> Integrations { get; protected set; }
         public IEnumerable<IWardenHookSpawnConfiguration> Hooks { get; }
+        public IEnumerable<IWatcherHookSpawnConfiguration> GlobalWatcherHooks { get; }
 
         public WardenSpawnConfiguration(
             string wardenName,
             IEnumerable<IWatcherSpawnWithHooksConfiguration> watchers,
             IEnumerable<ISpawnIntegration> integrations,
-            IEnumerable<IWardenHookSpawnConfiguration> globalWatcherHooks)
+            IEnumerable<IWardenHookSpawnConfiguration> hooks,
+            IEnumerable<IWatcherHookSpawnConfiguration> globalWatcherHooks)
         {
             WardenName = wardenName;
             Watchers = watchers ?? Enumerable.Empty<IWatcherSpawnWithHooksConfiguration>();
             Integrations = integrations ?? Enumerable.Empty<ISpawnIntegration>();
-            Hooks = globalWatcherHooks ?? Enumerable.Empty<IWardenHookSpawnConfiguration>();
+            Hooks = hooks ?? Enumerable.Empty<IWardenHookSpawnConfiguration>();
+            GlobalWatcherHooks = globalWatcherHooks ?? Enumerable.Empty<IWatcherHookSpawnConfiguration>();
         }
     }
 }

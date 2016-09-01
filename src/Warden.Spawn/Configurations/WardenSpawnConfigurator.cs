@@ -33,8 +33,9 @@ namespace Warden.Spawn.Configurations
             }
 
             var wardenHooks = ConfigureHooks(configuration.Hooks, configuration.Integrations);
+            var globalWatcherHooks = ConfigureWatcherHooks(configuration.GlobalWatcherHooks, configuration.Integrations);
             var spawnConfiguration = new WardenSpawnConfigurationInstance(configuration.WardenName, watchersWithHooks,
-                null, wardenHooks);
+                null, wardenHooks, globalWatcherHooks);
 
             return new WardenSpawn(spawnConfiguration);
         }
