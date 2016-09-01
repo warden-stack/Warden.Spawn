@@ -7,33 +7,47 @@ namespace Warden.Spawn.Integrations.Console
 {
     public class ConsoleSpawnIntegrationWardenHooksResolver : IWardenHooksResolver
     {
-        private readonly ConsoleSpawnIntegrationConfiguration _integrationConfiguration;
+        private readonly IConsoleService _service;
 
-        public ConsoleSpawnIntegrationWardenHooksResolver(ConsoleSpawnIntegrationConfiguration integrationConfiguration)
+        public ConsoleSpawnIntegrationWardenHooksResolver(IConsoleService service)
         {
-            _integrationConfiguration = integrationConfiguration;
+            _service = service;
         }
+
+        public Expression<Action<Exception>> OnError(object configuration)
+            => x => _service.PrintAsync(configuration);
+
+        public Expression<Func<Exception, Task>> OnErrorAsync(object configuration)
+            => x => _service.PrintAsync(configuration);
 
         public Expression<Action<IWardenIteration>> OnIterationCompleted(object configuration)
-        {
-            var config = configuration as ConsoleSpawnIntegrationHooksConfiguration;
-            if (config == null)
-                throw new InvalidOperationException();
-
-            var text = string.IsNullOrWhiteSpace(config.Text) ? _integrationConfiguration.DefaultText : config.Text;
-
-            return x => System.Console.WriteLine(text);
-        }
+            => x => _service.PrintAsync(configuration);
 
         public Expression<Func<IWardenIteration, Task>> OnIterationCompletedAsync(object configuration)
-        {
-            var config = configuration as ConsoleSpawnIntegrationHooksConfiguration;
-            if (config == null)
-                throw new InvalidOperationException();
+            => x => _service.PrintAsync(configuration);
 
-            var text = string.IsNullOrWhiteSpace(config.Text) ? _integrationConfiguration.DefaultText : config.Text;
+        public Expression<Action<long>> OnIterationStart(object configuration)
+            => x => _service.PrintAsync(configuration);
 
-            return  x => Task.Factory.StartNew(() => System.Console.WriteLine(text));
-        }
+        public Expression<Func<long, Task>> OnIterationStartAsync(object configuration)
+            => x => _service.PrintAsync(configuration);
+
+        public Expression<Action> OnPause(object configuration)
+            => () => _service.PrintAsync(configuration);
+
+        public Expression<Func<Task>> OnPauseAsync(object configuration)
+            => () => _service.PrintAsync(configuration);
+
+        public Expression<Action> OnStart(object configuration)
+            => () => _service.PrintAsync(configuration);
+
+        public Expression<Func<Task>> OnStartAsync(object configuration)
+            => () => _service.PrintAsync(configuration);
+
+        public Expression<Action> OnStop(object configuration)
+            => () => _service.PrintAsync(configuration);
+
+        public Expression<Func<Task>> OnStopAsync(object configuration)
+            => () => _service.PrintAsync(configuration);
     }
 }

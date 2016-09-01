@@ -1,60 +1,53 @@
 ﻿using System;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Warden.Integrations.SendGrid;
 using Warden.Spawn.Hooks;
 
 namespace Warden.Spawn.Integrations.SendGrid
 {
     public class SendGridIntegrationWardenHooksResolver : IWardenHooksResolver
     {
-        private readonly SendGridIntegration _integration;
-        private readonly SendGridSpawnIntegrationConfiguration _integrationConfiguration;
+        private readonly ISendGridService _service;
 
-        public SendGridIntegrationWardenHooksResolver(SendGridIntegration integration, 
-            SendGridSpawnIntegrationConfiguration integrationConfiguration)
+        public SendGridIntegrationWardenHooksResolver(ISendGridService service)
         {
-            _integration = integration;
-            _integrationConfiguration = integrationConfiguration;
+            _service = service;
         }
+
+        public Expression<Action<Exception>> OnError(object configuration)
+            => x => _service.SendMessageAsync(configuration);
+
+        public Expression<Func<Exception, Task>> OnErrorAsync(object configuration)
+            => x => _service.SendMessageAsync(configuration);
 
         public Expression<Action<IWardenIteration>> OnIterationCompleted(object configuration)
-        {
-            var config = configuration as SendGridSpawnIntegrationHooksConfiguration;
-            if (config == null)
-                throw new InvalidOperationException();
-
-            var subject = string.IsNullOrWhiteSpace(config.Subject)
-                ? _integrationConfiguration.DefaultSubject
-                : config.Subject;
-            var message = string.IsNullOrWhiteSpace(config.Message)
-                ? _integrationConfiguration.DefaultMessage
-                : config.Message;
-            var receivers = config.Receivers == null || !config.Receivers.Any()
-                ? _integrationConfiguration.DefaultReceivers
-                : config.Receivers;
-
-            return x => Task.Factory.StartNew(() => _integration.SendEmailAsync(subject, message, receivers.ToArray()));
-        }
+            => x => _service.SendMessageAsync(configuration);
 
         public Expression<Func<IWardenIteration, Task>> OnIterationCompletedAsync(object configuration)
-        {
-            var config = configuration as SendGridSpawnIntegrationHooksConfiguration;
-            if (config == null)
-                throw new InvalidOperationException();
+            => x => _service.SendMessageAsync(configuration);
 
-            var subject = string.IsNullOrWhiteSpace(config.Subject)
-                ? _integrationConfiguration.DefaultSubject
-                : config.Subject;
-            var message = string.IsNullOrWhiteSpace(config.Message)
-                ? _integrationConfiguration.DefaultMessage
-                : config.Message;
-            var receivers = config.Receivers == null || !config.Receivers.Any()
-                ? _integrationConfiguration.DefaultReceivers
-                : config.Receivers;
+        public Expression<Action<long>> OnIterationStart(object configuration)
+            => x => _service.SendMessageAsync(configuration);
 
-            return x => _integration.SendEmailAsync(subject, message, receivers.ToArray());
-        }
+        public Expression<Func<long, Task>> OnIterationStartAsync(object configuration)
+            => x => _service.SendMessageAsync(configuration);
+
+        public Expression<Action> OnPause(object configuration)
+            => () => _service.SendMessageAsync(configuration);
+
+        public Expression<Func<Task>> OnPauseAsync(object configuration)
+            => () => _service.SendMessageAsync(configuration);
+
+        public Expression<Action> OnStart(object configuration)
+            => () => _service.SendMessageAsync(configuration);
+
+        public Expression<Func<Task>> OnStartAsync(object configuration)
+            => () => _service.SendMessageAsync(configuration);
+
+        public Expression<Action> OnStop(object configuration)
+            => () => _service.SendMessageAsync(configuration);
+
+        public Expression<Func<Task>> OnStopAsync(object configuration)
+            => () => _service.SendMessageAsync(configuration);
     }
 }

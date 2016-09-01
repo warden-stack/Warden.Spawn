@@ -9,93 +9,53 @@ namespace Warden.Spawn.Integrations.Console
 {
     public class ConsoleSpawnIntegrationAggregatedWatcherHooksResolver : IAggregatedWatcherHooksResolver
     {
-        private readonly ConsoleSpawnIntegrationConfiguration _integrationConfiguration;
+        private readonly IConsoleService _service;
 
-        public ConsoleSpawnIntegrationAggregatedWatcherHooksResolver(ConsoleSpawnIntegrationConfiguration integrationConfiguration)
+        public ConsoleSpawnIntegrationAggregatedWatcherHooksResolver(IConsoleService service)
         {
-            _integrationConfiguration = integrationConfiguration;
+            _service = service;
         }
 
-        public Expression<Action<IEnumerable<IWatcherCheck>>> OnStart()
-        {
-            throw new NotImplementedException();
-        }
+        public Expression<Action<IEnumerable<IWatcherCheck>>> OnStart(object configuration)
+            => x => _service.PrintAsync(configuration);
 
-        public Expression<Func<IEnumerable<IWatcherCheck>, Task>> OnStartAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public Expression<Func<IEnumerable<IWatcherCheck>, Task>> OnStartAsync(object configuration)
+            => x => _service.PrintAsync(configuration);
 
-        public Expression<Action<IEnumerable<IWardenCheckResult>>> OnSuccess()
-        {
-            throw new NotImplementedException();
-        }
+        public Expression<Action<IEnumerable<IWardenCheckResult>>> OnSuccess(object configuration)
+            => x => _service.PrintAsync(configuration);
 
-        public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnSuccessAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnSuccessAsync(object configuration)
+            => x => _service.PrintAsync(configuration);
 
-        public Expression<Action<IEnumerable<IWardenCheckResult>>> OnFirstSuccess()
-        {
-            throw new NotImplementedException();
-        }
+        public Expression<Action<IEnumerable<IWardenCheckResult>>> OnFirstSuccess(object configuration)
+            => x => _service.PrintAsync(configuration);
 
-        public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnFirstSuccessAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnFirstSuccessAsync(object configuration)
+            => x => _service.PrintAsync(configuration);
 
-        public Expression<Action<IEnumerable<IWardenCheckResult>>> OnFailure()
-        {
-            throw new NotImplementedException();
-        }
+        public Expression<Action<IEnumerable<IWardenCheckResult>>> OnFailure(object configuration)
+            => x => _service.PrintAsync(configuration);
 
-        public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnFailureAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnFailureAsync(object configuration)
+            => x => _service.PrintAsync(configuration);
 
         public Expression<Action<IEnumerable<IWardenCheckResult>>> OnCompleted(object configuration)
-        {
-            var config = configuration as ConsoleSpawnIntegrationHooksConfiguration;
-            if (config == null)
-                throw new InvalidOperationException();
-
-            var text = string.IsNullOrWhiteSpace(config.Text) ? _integrationConfiguration.DefaultText : config.Text;
-
-            return x => System.Console.WriteLine(text);
-        }
+            => x => _service.PrintAsync(configuration);
 
         public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnCompletedAsync(object configuration)
-        {
-            var config = configuration as ConsoleSpawnIntegrationHooksConfiguration;
-            if (config == null)
-                throw new InvalidOperationException();
+            => x => _service.PrintAsync(configuration);
 
-            var text = string.IsNullOrWhiteSpace(config.Text) ? _integrationConfiguration.DefaultText : config.Text;
+        public Expression<Action<IEnumerable<Exception>>> OnError(object configuration)
+            => x => _service.PrintAsync(configuration);
 
-            return x => Task.Factory.StartNew(() => System.Console.WriteLine(text));
-        }
+        public Expression<Func<IEnumerable<Exception>, Task>> OnErrorAsync(object configuration)
+            => x => _service.PrintAsync(configuration);
 
-        public Expression<Action<IEnumerable<Exception>>> OnError()
-        {
-            throw new NotImplementedException();
-        }
+        public Expression<Action<IEnumerable<Exception>>> OnFirstError(object configuration)
+            => x => _service.PrintAsync(configuration);
 
-        public Expression<Func<IEnumerable<Exception>, Task>> OnErrorAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Expression<Action<IEnumerable<Exception>>> OnFirstError()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Expression<Func<IEnumerable<Exception>, Task>> OnFirstErrorAsync()
-        {
-            throw new NotImplementedException();
-        }
+        public Expression<Func<IEnumerable<Exception>, Task>> OnFirstErrorAsync(object configuration)
+            => x => _service.PrintAsync(configuration);
     }
 }

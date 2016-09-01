@@ -7,19 +7,19 @@ namespace Warden.Spawn.Hooks
 {
     public interface IWatcherHooksResolver
     {
-        Expression<Action<IWatcherCheck>> OnStart();
-        Expression<Func<IWatcherCheck, Task>> OnStartAsync();
-        Expression<Action<IWardenCheckResult>> OnSuccess();
-        Expression<Func<IWardenCheckResult, Task>> OnSuccessAsync();
-        Expression<Action<IWardenCheckResult>> OnFirstSuccess();
-        Expression<Func<IWardenCheckResult, Task>> OnFirstSuccessAsync();
-        Expression<Action<IWardenCheckResult>> OnFailure();
-        Expression<Func<IWardenCheckResult, Task>> OnFailureAsync();
+        Expression<Action<IWatcherCheck>> OnStart(object configuration);
+        Expression<Func<IWatcherCheck, Task>> OnStartAsync(object configuration);
+        Expression<Action<IWardenCheckResult>> OnSuccess(object configuration);
+        Expression<Func<IWardenCheckResult, Task>> OnSuccessAsync(object configuration);
+        Expression<Action<IWardenCheckResult>> OnFirstSuccess(object configuration);
+        Expression<Func<IWardenCheckResult, Task>> OnFirstSuccessAsync(object configuration);
+        Expression<Action<IWardenCheckResult>> OnFailure(object configuration);
+        Expression<Func<IWardenCheckResult, Task>> OnFailureAsync(object configuration);
         Expression<Action<IWardenCheckResult>> OnCompleted(object configuration);
         Expression<Func<IWardenCheckResult, Task>> OnCompletedAsync(object configuration);
-        Expression<Action<Exception>> OnError();
-        Expression<Func<Exception, Task>> OnErrorAsync();
-        Expression<Action<Exception>> OnFirstError();
-        Expression<Func<Exception, Task>> OnFirstErrorAsync();
+        Expression<Action<Exception>> OnError(object configuration);
+        Expression<Func<Exception, Task>> OnErrorAsync(object configuration);
+        Expression<Action<Exception>> OnFirstError(object configuration);
+        Expression<Func<Exception, Task>> OnFirstErrorAsync(object configuration);
     }
 }

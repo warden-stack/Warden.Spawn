@@ -109,7 +109,7 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
 
             foreach (var hookConfig in hooksConfigurations)
             {
-                SetWatcherHookConfiguration(wardenName, hookConfig, integrations, hookType: "globalWatcherHooks");
+                SetWatcherHookConfiguration(wardenName, hookConfig, integrations, type: "globalWatcherHooks");
 
                 yield return hookConfig;
             }
@@ -128,7 +128,7 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
 
             foreach (var hookConfig in hooksConfigurations)
             {
-                SetWatcherHookConfiguration(wardenName, hookConfig, integrations, hookType: "aggregatedWatcherHooks");
+                SetWatcherHookConfiguration(wardenName, hookConfig, integrations, type: "aggregatedWatcherHooks");
 
                 yield return hookConfig;
             }
@@ -138,7 +138,7 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
             IWatcherHookSpawnConfiguration hookConfig, 
             IEnumerable<ISpawnIntegration> integrations, 
             string watcher = "",
-            string hookType = "")
+            string type = "")
         {
             var integrationName = hookConfig.Use.ToLowerInvariant();
             var integration = integrations.FirstOrDefault(x =>
@@ -149,12 +149,12 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
             var integrationNamespace = integration.GetType().Namespace;
             var watcherHooksConfigurationName = integration.GetType().Name + "HooksConfiguration";
             var watcherHooksConfigurationType =
-                Type.GetType($"{@integrationNamespace}.{watcherHooksConfigurationName},{integrationNamespace}");
+                Type.GetType($"{integrationNamespace}.{watcherHooksConfigurationName},{integrationNamespace}");
             var cfg = JsonConvert.SerializeObject(hookConfig.Configuration);
             var hookName = hookConfig.Type.ToString();
             hookConfig.Configuration = JsonConvert.DeserializeObject(cfg, watcherHooksConfigurationType);
             _credentialsConfigurator.SetConfiguration(wardenName, hookConfig.Configuration,
-                integration: integrationName, watcher: watcher, hook: hookName);
+                integration: integrationName, watcher: watcher, hook: hookName, type: type); 
         }
 
         private IEnumerable<ISpawnIntegration> ResolveIntegrations(string wardenName, dynamic integrations)
@@ -210,7 +210,7 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
                 var hookName = hookConfig.Type.ToString();
                 hookConfig.Configuration = JsonConvert.DeserializeObject(cfg, wardenHooksConfigurationType);
                 _credentialsConfigurator.SetConfiguration(wardenName, hookConfig.Configuration,
-                    integration: integrationName, hook: hookName);
+                    integration: integrationName, hook: hookName, type: "wardenHooks");
 
                 yield return hookConfig;
             }
