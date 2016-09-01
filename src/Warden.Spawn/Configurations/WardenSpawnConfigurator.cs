@@ -20,7 +20,7 @@ namespace Warden.Spawn.Configurations
                 var @namespace = watcher.Configuration.GetType().Namespace;
                 var configuratorTypeName = watcher.Configuration.GetType().Name.Replace("Configuration", "Configurator");
                 var configurationType = Type.GetType($"{@namespace}.{configuratorTypeName},{@namespace}");
-                if(configurationType == null)
+                if (configurationType == null)
                     continue;
 
                 var configurator = Activator.CreateInstance(configurationType);
@@ -33,9 +33,12 @@ namespace Warden.Spawn.Configurations
             }
 
             var wardenHooks = ConfigureHooks(configuration.Hooks, configuration.Integrations);
-            var globalWatcherHooks = ConfigureWatcherHooks(configuration.GlobalWatcherHooks, configuration.Integrations);
+            var globalWatcherHooks = ConfigureGlobalWatcherHooks(configuration.GlobalWatcherHooks,
+                configuration.Integrations);
+            var aggregatedWatcherHooks = ConfigureAggregatedWatcherHooks(configuration.AggregatedWatcherHooks,
+                configuration.Integrations);
             var spawnConfiguration = new WardenSpawnConfigurationInstance(configuration.WardenName, watchersWithHooks,
-                null, wardenHooks, globalWatcherHooks);
+                null, wardenHooks, globalWatcherHooks, aggregatedWatcherHooks);
 
             return new WardenSpawn(spawnConfiguration);
         }
@@ -67,6 +70,43 @@ namespace Warden.Spawn.Configurations
             }
 
             Action<WatcherHooksConfiguration.Builder> hooks = x =>
+                x.OnCompleted(onCompletedHooks.ToArray())
+                 .OnCompletedAsync(onCompletedAsyncHooks.ToArray());
+
+            return hooks;
+        }
+
+        private Action<WatcherHooksConfiguration.Builder> ConfigureGlobalWatcherHooks(
+            IEnumerable<IWatcherHookSpawnConfiguration> watcherConfigurations,
+            IEnumerable<ISpawnIntegration> integrations) => ConfigureWatcherHooks(watcherConfigurations, integrations);
+
+        private Action<AggregatedWatcherHooksConfiguration.Builder> ConfigureAggregatedWatcherHooks(
+            IEnumerable<IWatcherHookSpawnConfiguration> watcherConfigurations,
+            IEnumerable<ISpawnIntegration> integrations)
+        {
+            var onCompletedHooks = new List<Expression<Action<IEnumerable<IWardenCheckResult>>>>();
+            var onCompletedAsyncHooks = new List<Expression<Func<IEnumerable<IWardenCheckResult>, Task>>>();
+            foreach (var config in watcherConfigurations)
+            {
+                var resolver = integrations.FirstOrDefault(x =>
+                    x.Name.ToLowerInvariant() == config.Use.ToLowerInvariant());
+                if (resolver == null)
+                    continue;
+
+                switch (config.Type)
+                {
+                    case WatcherHookType.OnCompleted:
+                        var onCompleted = resolver.AggregatedWatcherHooksResolver.OnCompleted(config.Configuration);
+                        onCompletedHooks.Add(onCompleted);
+                        break;
+                    case WatcherHookType.OnCompletedAsync:
+                        var onCompletedAsync = resolver.AggregatedWatcherHooksResolver.OnCompletedAsync(config.Configuration);
+                        onCompletedAsyncHooks.Add(onCompletedAsync);
+                        break;
+                }
+            }
+
+            Action<AggregatedWatcherHooksConfiguration.Builder> hooks = x =>
                 x.OnCompleted(onCompletedHooks.ToArray())
                  .OnCompletedAsync(onCompletedAsyncHooks.ToArray());
 

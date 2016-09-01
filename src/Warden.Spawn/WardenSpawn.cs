@@ -27,6 +27,7 @@ namespace Warden.Spawn
             }
             wardenConfiguration.SetHooks(_configuration.Hooks);
             wardenConfiguration.SetGlobalWatcherHooks(_configuration.GlobalWatcherHooks);
+            wardenConfiguration.SetAggregatedWatcherHooks(_configuration.AggregatedWatcherHooks);
 
             return WardenInstance.Create(_configuration.WardenName, wardenConfiguration.Build());
         }

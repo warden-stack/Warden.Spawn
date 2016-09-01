@@ -54,8 +54,11 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
             var hooks = ResolveHooks(wardenName, spawnConfiguration.hooks, integrations);
             var globalWatcherHooks = ResolveGlobalWatcherHooks(wardenName, spawnConfiguration.globalWatcherHooks,
                 integrations);
+            var aggregatedWatcherHooks = ResolveAggregatedWatcherHooks(wardenName, spawnConfiguration.aggregatedWatcherHooks,
+                integrations);
 
-            return new WardenSpawnConfiguration(wardenName, watchers, integrations, hooks, globalWatcherHooks);
+            return new WardenSpawnConfiguration(wardenName, watchers, integrations, hooks,
+                globalWatcherHooks, aggregatedWatcherHooks);
         }
 
         private IEnumerable<IWatcherSpawnWithHooksConfiguration> ResolveWatchers(string wardenName,
@@ -107,6 +110,25 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
             foreach (var hookConfig in hooksConfigurations)
             {
                 SetWatcherHookConfiguration(wardenName, hookConfig, integrations, hookType: "globalWatcherHooks");
+
+                yield return hookConfig;
+            }
+        }
+
+        private IEnumerable<IWatcherHookSpawnConfiguration> ResolveAggregatedWatcherHooks(string wardenName,
+            dynamic hooks, IEnumerable<ISpawnIntegration> integrations)
+        {
+            if (hooks == null)
+                yield break;
+
+            var hooksText = JsonConvert.SerializeObject(hooks);
+            var hooksConfigurations =
+                JsonConvert.DeserializeObject<IEnumerable<WatcherHookSpawnConfiguration>>(hooksText)
+                    as IEnumerable<WatcherHookSpawnConfiguration>;
+
+            foreach (var hookConfig in hooksConfigurations)
+            {
+                SetWatcherHookConfiguration(wardenName, hookConfig, integrations, hookType: "aggregatedWatcherHooks");
 
                 yield return hookConfig;
             }

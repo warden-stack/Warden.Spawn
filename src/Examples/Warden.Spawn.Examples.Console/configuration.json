@@ -90,5 +90,16 @@
         "message": "Monitoring error(s) global hook async."
       }
     }
+  ],
+  "aggregatedWatcherHooks": [
+    {
+      "type": "onCompletedAsync",
+      "condition": "invalidCheckResult",
+      "use": "sendGrid",
+      "configuration": {
+        "subject": "Monitoring async aggregated hook",
+        "message": "Monitoring error(s) aggregated hook async."
+      }
+    }
   ]
 }

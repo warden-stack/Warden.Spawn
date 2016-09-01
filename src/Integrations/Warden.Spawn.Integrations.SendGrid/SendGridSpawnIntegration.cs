@@ -10,6 +10,7 @@ namespace Warden.Spawn.Integrations.SendGrid
         public string Name => "SendGrid";
         public IWatcherHooksResolver WatcherHooksResolver { get; protected set; }
         public IWardenHooksResolver WardenHooksResolver { get; }
+        public IAggregatedWatcherHooksResolver AggregatedWatcherHooksResolver { get; }
         public ISpawnIntegrationConfiguration Configuration => _configuration;
 
         public SendGridSpawnIntegration(SendGridSpawnIntegrationConfiguration configuration)
@@ -22,6 +23,8 @@ namespace Warden.Spawn.Integrations.SendGrid
             var integration = SendGridIntegration.Create(sendGridConfiguration);
             WatcherHooksResolver = new SendGridIntegrationWatcherHooksResolver(integration, configuration);
             WardenHooksResolver = new SendGridIntegrationWardenHooksResolver(integration, configuration);
+            AggregatedWatcherHooksResolver = new SendGridIntegrationAggregatedWatcherHooksResolver(integration,
+                configuration);
         }
     }
 }

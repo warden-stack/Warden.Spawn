@@ -7,6 +7,7 @@ namespace Warden.Spawn.Configurations
         string Name { get; }
         IWatcherHooksResolver WatcherHooksResolver { get; }
         IWardenHooksResolver WardenHooksResolver { get; }
+        IAggregatedWatcherHooksResolver AggregatedWatcherHooksResolver { get; }
         ISpawnIntegrationConfiguration Configuration { get; }
     }
 }

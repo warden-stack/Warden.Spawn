@@ -9,6 +9,7 @@ namespace Warden.Spawn.Integrations.Console
         public string Name => "Console";
         public IWatcherHooksResolver WatcherHooksResolver { get; }
         public IWardenHooksResolver WardenHooksResolver { get; }
+        public IAggregatedWatcherHooksResolver AggregatedWatcherHooksResolver { get; }
         public ISpawnIntegrationConfiguration Configuration => _configuration;
 
         public ConsoleSpawnIntegration(ConsoleSpawnIntegrationConfiguration configuration)
@@ -16,6 +17,7 @@ namespace Warden.Spawn.Integrations.Console
             _configuration = configuration;
             WatcherHooksResolver = new ConsoleSpawnIntegrationWatcherHooksResolver(configuration);
             WardenHooksResolver = new ConsoleSpawnIntegrationWardenHooksResolver(configuration);
+            AggregatedWatcherHooksResolver = new ConsoleSpawnIntegrationAggregatedWatcherHooksResolver(configuration);
         }
     }
 }
