@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using Warden.Core;
+using Warden.Integrations;
 using Warden.Spawn.Hooks;
 using Warden.Watchers;
 
@@ -14,8 +15,43 @@ namespace Warden.Spawn.Configurations
     {
         public IWardenSpawn Configure(IWardenSpawnConfiguration configuration)
         {
-            var watchersWithHooks = new List<IWatcherWithHooks>();
-            foreach (var watcher in configuration.Watchers)
+            var integrations = ConfigureIntegrations(configuration.Integrations);
+            var watchers = ConfigureWatchers(configuration.Watchers, configuration.Integrations);
+            var wardenHooks = ConfigureHooks(configuration.Hooks, configuration.Integrations);
+            var globalWatcherHooks = ConfigureGlobalWatcherHooks(configuration.GlobalWatcherHooks,
+                configuration.Integrations);
+            var aggregatedWatcherHooks = ConfigureAggregatedWatcherHooks(configuration.AggregatedWatcherHooks,
+                configuration.Integrations);
+            var spawnConfiguration = new WardenSpawnConfigurationInstance(configuration.WardenName, watchers,
+                integrations, wardenHooks, globalWatcherHooks, aggregatedWatcherHooks);
+
+            return new WardenSpawn(spawnConfiguration);
+        }
+
+        private IEnumerable<IIntegration> ConfigureIntegrations(IEnumerable<ISpawnIntegration> integrations)
+        {
+            foreach (var integration in integrations)
+            {
+                var @namespace = integration.Configuration.GetType().Namespace;
+                var configuratorTypeName = integration.Configuration.GetType().Name.Replace("Configuration", "Configurator");
+                var configurationType = Type.GetType($"{@namespace}.{configuratorTypeName},{@namespace}");
+                if (configurationType == null)
+                    continue;
+
+                var configurator = Activator.CreateInstance(configurationType);
+                var method = configurator.GetType()
+                    .GetRuntimeMethods()
+                    .First(x => x.Name.Equals("Configure"));
+                var integrationInstance = method.Invoke(configurator, new object[] { integration.Configuration }) as IIntegration;
+
+                yield return integrationInstance;
+            }
+        }
+
+        private IEnumerable<IWatcherWithHooks> ConfigureWatchers(IEnumerable<IWatcherSpawnWithHooksConfiguration> watchers, 
+            IEnumerable<ISpawnIntegration> integrations)
+        {
+            foreach (var watcher in watchers)
             {
                 var @namespace = watcher.Configuration.GetType().Namespace;
                 var configuratorTypeName = watcher.Configuration.GetType().Name.Replace("Configuration", "Configurator");
@@ -27,20 +63,11 @@ namespace Warden.Spawn.Configurations
                 var method = configurator.GetType()
                     .GetRuntimeMethods()
                     .First(x => x.Name.Equals("Configure"));
-                var watcherInstance = method.Invoke(configurator, new object[] {watcher.Configuration}) as IWatcher;
-                var watcherHooks = ConfigureWatcherHooks(watcher.Hooks, configuration.Integrations);
-                watchersWithHooks.Add(new WatcherWithHooks(watcherInstance, watcherHooks));
+                var watcherInstance = method.Invoke(configurator, new object[] { watcher.Configuration }) as IWatcher;
+                var watcherHooks = ConfigureWatcherHooks(watcher.Hooks, integrations);
+
+                yield return new WatcherWithHooks(watcherInstance, watcherHooks);
             }
-
-            var wardenHooks = ConfigureHooks(configuration.Hooks, configuration.Integrations);
-            var globalWatcherHooks = ConfigureGlobalWatcherHooks(configuration.GlobalWatcherHooks,
-                configuration.Integrations);
-            var aggregatedWatcherHooks = ConfigureAggregatedWatcherHooks(configuration.AggregatedWatcherHooks,
-                configuration.Integrations);
-            var spawnConfiguration = new WardenSpawnConfigurationInstance(configuration.WardenName, watchersWithHooks,
-                null, wardenHooks, globalWatcherHooks, aggregatedWatcherHooks);
-
-            return new WardenSpawn(spawnConfiguration);
         }
 
         private Action<WatcherHooksConfiguration.Builder> ConfigureWatcherHooks(

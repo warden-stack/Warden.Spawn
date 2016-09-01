@@ -19,6 +19,9 @@ namespace Warden.Spawn
 
             foreach (var integration in _configuration.Integrations)
             {
+                if (integration is EmptyIntegration)
+                    continue;
+
                 wardenConfiguration.AddIntegration(integration);
             }
             foreach (var watcherWithHooks in _configuration.Watchers)
