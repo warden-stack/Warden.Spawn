@@ -13,7 +13,8 @@ namespace Warden.Spawn.Extensions.Security
             _credentialsManager = credentialsManager;
         }
 
-        public void SetConfiguration(string warden, object configuration, string watcher = "", string integration = "", string hook = "")
+        public void SetConfiguration(string warden, object configuration, string watcher = "", string integration = "",
+            string hook = "", string type = "")
         {
             var configurationType = configuration.GetType();
             var properties = configurationType.GetProperties().Where(
@@ -23,7 +24,7 @@ namespace Warden.Spawn.Extensions.Security
 
             foreach (var property in properties)
             {
-                var value = _credentialsManager.Get(warden, property.Name, watcher, integration, hook);
+                var value = _credentialsManager.Get(warden, property.Name, watcher, integration, hook, type);
                 if (string.IsNullOrWhiteSpace(value))
                     continue;
 

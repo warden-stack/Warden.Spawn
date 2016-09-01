@@ -8,5 +8,6 @@
 	Watcher nvarchar(MAX) null,
 	Integration nvarchar(MAX) null,
 	Hook nvarchar(MAX) null,
+	Type nvarchar(MAX) null,
 	CreatedAt datetime not null
 )

@@ -3,7 +3,6 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using Dapper;
 using Warden.Spawn.Security;
 
@@ -24,7 +23,7 @@ namespace Warden.Spawn.Extensions.SqlTde
             _tableName = tableName;
         }
 
-        public string Get(string warden, string name, string watcher = "", string integration = "", string hook = "")
+        public string Get(string warden, string name, string watcher = "", string integration = "", string hook = "", string type = "")
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -34,9 +33,10 @@ namespace Warden.Spawn.Extensions.SqlTde
                 watcher = watcher?.ToLowerInvariant();
                 integration = integration?.ToLowerInvariant();
                 hook = hook?.ToLowerInvariant();
-                var hash = Hash(warden, name, watcher, integration, hook);
+                type = type?.ToLowerInvariant();
+                var hash = Hash(warden, name, watcher, integration, hook, type);
                 var credential = connection
-                    .Query<Credential>($"select value,salt,watcher,integration,hook from {_tableName} " +
+                    .Query<Credential>($"select value,salt,watcher,integration,hook,type from {_tableName} " +
                                        "where hash=@hash",
                         new {hash})
                     .FirstOrDefault();
@@ -46,7 +46,7 @@ namespace Warden.Spawn.Extensions.SqlTde
         }
 
         public void Save(string warden, string name, string value, string watcher = "", string integration = "",
-            string hook = "")
+            string hook = "", string type = "")
         {
 
             using (var connection = new SqlConnection(_connectionString))
@@ -54,18 +54,19 @@ namespace Warden.Spawn.Extensions.SqlTde
                 connection.Open();
                 using (var transaction = connection.BeginTransaction())
                 {
-                    Remove(warden, name, watcher, integration, hook, connection, transaction);
+                    Remove(warden, name, watcher, integration, hook, type, connection, transaction);
                     warden = warden.ToLowerInvariant();
                     name = name.ToLowerInvariant();
                     watcher = watcher?.ToLowerInvariant();
                     integration = integration?.ToLowerInvariant();
                     hook = hook?.ToLowerInvariant();
+                    type = type?.ToLowerInvariant();
                     var salt = _encrypter.GetSalt();
                     var encryptedValue = _encrypter.Encrypt(value, salt);
-                    var hash = Hash(warden, name, watcher, integration, hook);
+                    var hash = Hash(warden, name, watcher, integration, hook, type);
                     var affectedResults = connection.Execute($"insert into {_tableName} values " +
                                                              "(@hash, @warden, @name, @value, @salt," +
-                                                             "@watcher, @integration, @hook, @createdAt)",
+                                                             "@watcher, @integration, @hook, @type, @createdAt)",
                         new
                         {
                             hash,
@@ -76,6 +77,7 @@ namespace Warden.Spawn.Extensions.SqlTde
                             watcher,
                             integration,
                             hook,
+                            type,
                             createdAt = DateTime.UtcNow
                         }, transaction);
                     transaction.Commit();
@@ -83,16 +85,16 @@ namespace Warden.Spawn.Extensions.SqlTde
             }
         }
 
-        public void Remove(string warden, string name, string watcher = "", string integration = "", string hook = "")
+        public void Remove(string warden, string name, string watcher = "", string integration = "", string hook = "", string type = "")
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                Remove(warden, name, watcher, integration, hook, connection, null);
+                Remove(warden, name, watcher, integration, hook, type, connection, null);
             }
         }
 
-        private void Remove(string warden, string name, string watcher, string integration, string hook,
+        private void Remove(string warden, string name, string watcher, string integration, string hook, string type,
             DbConnection connection, IDbTransaction transaction)
         {
             warden = warden.ToLowerInvariant();
@@ -100,16 +102,17 @@ namespace Warden.Spawn.Extensions.SqlTde
             watcher = watcher?.ToLowerInvariant();
             integration = integration?.ToLowerInvariant();
             hook = hook?.ToLowerInvariant();
-            var hash = Hash(warden, name, watcher, integration, hook);
+            type = type?.ToLowerInvariant();
+            var hash = Hash(warden, name, watcher, integration, hook, type);
             var affectedResults = connection
                 .Execute($"delete from {_tableName} where hash=@hash",
                     new {hash}, transaction);
         }
 
-        private string Hash(string warden, string name, string watcher, string integration, string hook)
+        private string Hash(string warden, string name, string watcher, string integration, string hook, string type)
             => _encrypter.Hash($"{warden.ToLowerInvariant()};{name.ToLowerInvariant()};" +
                                $"{watcher?.ToLowerInvariant()};{integration?.ToLowerInvariant()};" +
-                               $"{hook?.ToLowerInvariant()}");
+                               $"{hook?.ToLowerInvariant()};{type?.ToLowerInvariant()}");
 
         private class Credential
         {
@@ -118,6 +121,7 @@ namespace Warden.Spawn.Extensions.SqlTde
             public string Watcher { get; set; }
             public string Integration { get; set; }
             public string Hook { get; set; }
+            public string Type { get; set; }
         }
     }
 }
