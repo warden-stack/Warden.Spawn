@@ -16,10 +16,11 @@ namespace Warden.Spawn.Configurations
         public IWardenSpawn Configure(IWardenSpawnConfiguration configuration)
         {
             var integrations = ConfigureIntegrations(configuration.Integrations);
-            var watchers = ConfigureWatchers(configuration.Watchers, configuration.Integrations);
-            var wardenHooks = ConfigureHooks(configuration.Hooks, configuration.Integrations);
+            var configuredIntegrations = SetIntegrationInstances(configuration.Integrations, integrations);
+            var watchers = ConfigureWatchers(configuration.Watchers, configuredIntegrations);
+            var wardenHooks = ConfigureHooks(configuration.Hooks, configuredIntegrations);
             var globalWatcherHooks = ConfigureGlobalWatcherHooks(configuration.GlobalWatcherHooks,
-                configuration.Integrations);
+                configuredIntegrations);
             var aggregatedWatcherHooks = ConfigureAggregatedWatcherHooks(configuration.AggregatedWatcherHooks,
                 configuration.Integrations);
             var spawnConfiguration = new WardenSpawnConfigurationInstance(configuration.WardenName, watchers,
@@ -45,6 +46,21 @@ namespace Warden.Spawn.Configurations
                 var integrationInstance = method.Invoke(configurator, new object[] { integration.Configuration }) as IIntegration;
 
                 yield return integrationInstance;
+            }
+        }
+
+        //TODO: Refactor finding integration by type name.
+        private IEnumerable<ISpawnIntegration> SetIntegrationInstances(IEnumerable<ISpawnIntegration> configuredIntegrations,
+            IEnumerable<IIntegration> integrations)
+        {
+            foreach (var configuredIntegration in configuredIntegrations)
+            {
+                var integration = integrations.FirstOrDefault(x => x.GetType().Name.ToLowerInvariant()
+                    .Contains(configuredIntegration.Name.ToLowerInvariant())) ?? EmptyIntegration.Instance;
+
+                configuredIntegration.Integration = integration;
+
+                yield return configuredIntegration;
             }
         }
 

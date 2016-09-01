@@ -1,4 +1,5 @@
-﻿using Warden.Integrations.SendGrid;
+﻿using Warden.Integrations;
+using Warden.Integrations.SendGrid;
 using Warden.Spawn.Configurations;
 using Warden.Spawn.Hooks;
 
@@ -8,23 +9,24 @@ namespace Warden.Spawn.Integrations.SendGrid
     {
         private readonly SendGridSpawnIntegrationConfiguration _configuration;
         public string Name => "SendGrid";
-        public IWatcherHooksResolver WatcherHooksResolver { get; protected set; }
-        public IWardenHooksResolver WardenHooksResolver { get; }
-        public IAggregatedWatcherHooksResolver AggregatedWatcherHooksResolver { get; }
+        public IIntegration Integration { get; set; }
+
+        public IWatcherHooksResolver WatcherHooksResolver
+            => new SendGridIntegrationWatcherHooksResolver(GetIntegration(), _configuration);
+
+        public IWardenHooksResolver WardenHooksResolver
+            => new SendGridIntegrationWardenHooksResolver(GetIntegration(), _configuration);
+
+        public IAggregatedWatcherHooksResolver AggregatedWatcherHooksResolver
+            => new SendGridIntegrationAggregatedWatcherHooksResolver(GetIntegration(), _configuration);
+
         public ISpawnIntegrationConfiguration Configuration => _configuration;
 
         public SendGridSpawnIntegration(SendGridSpawnIntegrationConfiguration configuration)
         {
             _configuration = configuration;
-            var sendGridConfiguration = SendGridIntegrationConfiguration
-                .Create(configuration.ApiKey, configuration.Sender)
-                .Build();
-
-            var integration = SendGridIntegration.Create(sendGridConfiguration);
-            WatcherHooksResolver = new SendGridIntegrationWatcherHooksResolver(integration, configuration);
-            WardenHooksResolver = new SendGridIntegrationWardenHooksResolver(integration, configuration);
-            AggregatedWatcherHooksResolver = new SendGridIntegrationAggregatedWatcherHooksResolver(integration,
-                configuration);
         }
+
+        private SendGridIntegration GetIntegration() => Integration as SendGridIntegration;
     }
 }

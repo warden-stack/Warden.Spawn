@@ -1,4 +1,5 @@
-﻿using Warden.Spawn.Configurations;
+﻿using Warden.Integrations;
+using Warden.Spawn.Configurations;
 using Warden.Spawn.Hooks;
 
 namespace Warden.Spawn.Integrations.Console
@@ -7,17 +8,22 @@ namespace Warden.Spawn.Integrations.Console
     {
         private readonly ConsoleSpawnIntegrationConfiguration _configuration;
         public string Name => "Console";
-        public IWatcherHooksResolver WatcherHooksResolver { get; }
-        public IWardenHooksResolver WardenHooksResolver { get; }
-        public IAggregatedWatcherHooksResolver AggregatedWatcherHooksResolver { get; }
+        public IIntegration Integration { get; set; }
+
+        public IWatcherHooksResolver WatcherHooksResolver
+            => new ConsoleSpawnIntegrationWatcherHooksResolver(_configuration);
+
+        public IWardenHooksResolver WardenHooksResolver
+            => new ConsoleSpawnIntegrationWardenHooksResolver(_configuration);
+
+        public IAggregatedWatcherHooksResolver AggregatedWatcherHooksResolver
+            => new ConsoleSpawnIntegrationAggregatedWatcherHooksResolver(_configuration);
+
         public ISpawnIntegrationConfiguration Configuration => _configuration;
 
         public ConsoleSpawnIntegration(ConsoleSpawnIntegrationConfiguration configuration)
         {
             _configuration = configuration;
-            WatcherHooksResolver = new ConsoleSpawnIntegrationWatcherHooksResolver(configuration);
-            WardenHooksResolver = new ConsoleSpawnIntegrationWardenHooksResolver(configuration);
-            AggregatedWatcherHooksResolver = new ConsoleSpawnIntegrationAggregatedWatcherHooksResolver(configuration);
         }
     }
 }
