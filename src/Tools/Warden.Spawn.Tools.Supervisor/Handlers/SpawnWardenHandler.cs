@@ -3,22 +3,22 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Rebus.Bus;
 using Rebus.Handlers;
-using Warden.Shared.Messages;
+using Warden.Bus.Commands;
 
 namespace Warden.Spawn.Tools.Supervisor.Handlers
 {
-    public class SpawnWardenMessageHandler : IHandleMessages<SpawnWardenMessage>
+    public class SpawnWardenHandler : IHandleMessages<SpawnWarden>
     {
         private readonly IBus _bus;
         private readonly string _wardenHostPath;
 
-        public SpawnWardenMessageHandler(IBus bus, string wardenHostPath)
+        public SpawnWardenHandler(IBus bus, string wardenHostPath)
         {
             _bus = bus;
             _wardenHostPath = wardenHostPath;
         }
 
-        public async Task Handle(SpawnWardenMessage message)
+        public async Task Handle(SpawnWarden message)
         {
             Console.WriteLine("Received configuration and spawning new Warden instance.");
             var process = new Process
