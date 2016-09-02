@@ -16,12 +16,6 @@ namespace Warden.Spawn.Integrations.SendGrid
             _service = service;
         }
 
-        public Expression<Action<IEnumerable<IWatcherCheck>>> OnStart(object configuration)
-            => x => _service.SendMessageAsync(configuration);
-
-        public Expression<Func<IEnumerable<IWatcherCheck>, Task>> OnStartAsync(object configuration)
-            => x => _service.SendMessageAsync(configuration);
-
         public Expression<Action<IEnumerable<IWardenCheckResult>>> OnSuccess(object configuration)
             => x => _service.SendMessageAsync(configuration);
 
@@ -38,6 +32,12 @@ namespace Warden.Spawn.Integrations.SendGrid
             => x => _service.SendMessageAsync(configuration);
 
         public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnFailureAsync(object configuration)
+            => x => _service.SendMessageAsync(configuration);
+
+        public Expression<Action<IEnumerable<IWardenCheckResult>>> OnFirstFailure(object configuration)
+            => x => _service.SendMessageAsync(configuration);
+
+        public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnFirstFailureAsync(object configuration)
             => x => _service.SendMessageAsync(configuration);
 
         public Expression<Action<IEnumerable<IWardenCheckResult>>> OnCompleted(object configuration)

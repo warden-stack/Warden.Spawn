@@ -40,6 +40,12 @@ namespace Warden.Spawn.Integrations.Console
         public Expression<Func<IWardenCheckResult, Task>> OnFailureAsync(object configuration)
             => x => _service.PrintAsync(configuration);
 
+        public Expression<Action<IWardenCheckResult>> OnFirstFailure(object configuration)
+            => x => _service.PrintAsync(configuration);
+
+        public Expression<Func<IWardenCheckResult, Task>> OnFirstFailureAsync(object configuration)
+            => x => _service.PrintAsync(configuration);
+
         public Expression<Action<IWardenCheckResult>> OnCompleted(object configuration)
             => x => _service.PrintAsync(configuration);
 

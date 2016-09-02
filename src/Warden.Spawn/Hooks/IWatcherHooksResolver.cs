@@ -15,6 +15,8 @@ namespace Warden.Spawn.Hooks
         Expression<Func<IWardenCheckResult, Task>> OnFirstSuccessAsync(object configuration);
         Expression<Action<IWardenCheckResult>> OnFailure(object configuration);
         Expression<Func<IWardenCheckResult, Task>> OnFailureAsync(object configuration);
+        Expression<Action<IWardenCheckResult>> OnFirstFailure(object configuration);
+        Expression<Func<IWardenCheckResult, Task>> OnFirstFailureAsync(object configuration);
         Expression<Action<IWardenCheckResult>> OnCompleted(object configuration);
         Expression<Func<IWardenCheckResult, Task>> OnCompletedAsync(object configuration);
         Expression<Action<Exception>> OnError(object configuration);

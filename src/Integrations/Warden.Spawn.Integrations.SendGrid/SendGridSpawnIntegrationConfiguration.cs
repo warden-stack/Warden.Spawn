@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Warden.Spawn.Configurations;
+using Warden.Spawn.Security;
 
 namespace Warden.Spawn.Integrations.SendGrid
 {

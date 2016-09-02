@@ -2,7 +2,18 @@
 {
     public enum WardenHookType
     {
-        OnIterationCompleted = 0,
-        OnIterationCompletedAsync = 1
+        Unknown = 0,
+        OnStart,
+        OnStartAsync,
+        OnPause,
+        OnPauseAsync,
+        OnStop,
+        OnStopAsync,
+        OnError,
+        OnErrorAsync,
+        OnIterationStart,
+        OnIterationStartAsync,
+        OnIterationCompleted,
+        OnIterationCompletedAsync
     }
 }

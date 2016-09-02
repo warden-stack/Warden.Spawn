@@ -14,6 +14,24 @@ namespace Warden.Spawn.Integrations.Console
             _service = service;
         }
 
+        public Expression<Action> OnStart(object configuration)
+            => () => _service.PrintAsync(configuration);
+
+        public Expression<Func<Task>> OnStartAsync(object configuration)
+            => () => _service.PrintAsync(configuration);
+
+        public Expression<Action> OnPause(object configuration)
+            => () => _service.PrintAsync(configuration);
+
+        public Expression<Func<Task>> OnPauseAsync(object configuration)
+            => () => _service.PrintAsync(configuration);
+
+        public Expression<Action> OnStop(object configuration)
+            => () => _service.PrintAsync(configuration);
+
+        public Expression<Func<Task>> OnStopAsync(object configuration)
+            => () => _service.PrintAsync(configuration);
+
         public Expression<Action<Exception>> OnError(object configuration)
             => x => _service.PrintAsync(configuration);
 
@@ -31,23 +49,5 @@ namespace Warden.Spawn.Integrations.Console
 
         public Expression<Func<long, Task>> OnIterationStartAsync(object configuration)
             => x => _service.PrintAsync(configuration);
-
-        public Expression<Action> OnPause(object configuration)
-            => () => _service.PrintAsync(configuration);
-
-        public Expression<Func<Task>> OnPauseAsync(object configuration)
-            => () => _service.PrintAsync(configuration);
-
-        public Expression<Action> OnStart(object configuration)
-            => () => _service.PrintAsync(configuration);
-
-        public Expression<Func<Task>> OnStartAsync(object configuration)
-            => () => _service.PrintAsync(configuration);
-
-        public Expression<Action> OnStop(object configuration)
-            => () => _service.PrintAsync(configuration);
-
-        public Expression<Func<Task>> OnStopAsync(object configuration)
-            => () => _service.PrintAsync(configuration);
     }
 }

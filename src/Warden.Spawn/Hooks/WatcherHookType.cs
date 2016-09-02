@@ -2,7 +2,22 @@
 {
     public enum WatcherHookType
     {
-        OnCompleted = 0,
-        OnCompletedAsync = 1
+        Unknown = 0,
+        OnStart,
+        OnStartAsync,
+        OnSuccess,
+        OnSuccessAsync,
+        OnFirstSuccess,
+        OnFirstSuccessAsync,
+        OnFailure,
+        OnFailureAsync,
+        OnFirstFailure,
+        OnFirstFailureAsync,
+        OnCompleted,
+        OnCompletedAsync,
+        OnError,
+        OnErrorAsync,
+        OnFirstError,
+        OnFirstErrorAsync
     }
 }

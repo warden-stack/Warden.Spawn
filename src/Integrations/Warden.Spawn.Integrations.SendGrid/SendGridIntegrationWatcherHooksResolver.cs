@@ -39,6 +39,12 @@ namespace Warden.Spawn.Integrations.SendGrid
         public Expression<Func<IWardenCheckResult, Task>> OnFailureAsync(object configuration)
             => x => _service.SendMessageAsync(configuration);
 
+        public Expression<Action<IWardenCheckResult>> OnFirstFailure(object configuration)
+            => x => _service.SendMessageAsync(configuration);
+
+        public Expression<Func<IWardenCheckResult, Task>> OnFirstFailureAsync(object configuration)
+            => x => _service.SendMessageAsync(configuration);
+
         public Expression<Action<IWardenCheckResult>> OnCompleted(object configuration)
             => x => _service.SendMessageAsync(configuration);
 
