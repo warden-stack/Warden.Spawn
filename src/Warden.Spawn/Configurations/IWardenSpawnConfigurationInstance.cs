@@ -9,6 +9,9 @@ namespace Warden.Spawn.Configurations
     public interface IWardenSpawnConfigurationInstance : IConfiguration
     {
         string WardenName { get; }
+        long? IterationsCount { get; }
+        bool OverrideCustomIntervals { get; }
+        TimeSpan Interval { get; }
         IEnumerable<IWatcherWithHooks> Watchers { get; }
         IEnumerable<IIntegration> Integrations { get; }
         Action<WardenHooksConfiguration.Builder> Hooks { get; }

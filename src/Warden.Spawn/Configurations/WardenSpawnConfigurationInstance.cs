@@ -11,19 +11,29 @@ namespace Warden.Spawn.Configurations
     {
         public string Name => "Warden";
         public string WardenName { get; protected set; }
+        public long? IterationsCount { get; protected set; }
+        public bool OverrideCustomIntervals { get; protected set; }
+        public TimeSpan Interval { get; protected set; }
         public IEnumerable<IWatcherWithHooks> Watchers { get; protected set; }
         public IEnumerable<IIntegration> Integrations { get; protected set; }
         public Action<WardenHooksConfiguration.Builder> Hooks { get; }
         public Action<WatcherHooksConfiguration.Builder> GlobalWatcherHooks { get; }
         public Action<AggregatedWatcherHooksConfiguration.Builder> AggregatedWatcherHooks { get; set; }
 
+        protected WardenSpawnConfigurationInstance()
+        {
+        }
+
         public WardenSpawnConfigurationInstance(
             string wardenName,
             IEnumerable<IWatcherWithHooks> watchers,
-            IEnumerable<IIntegration> integrations, 
-            Action<WardenHooksConfiguration.Builder> hooks, 
+            IEnumerable<IIntegration> integrations,
+            Action<WardenHooksConfiguration.Builder> hooks,
             Action<WatcherHooksConfiguration.Builder> globalWatcherHooks,
-            Action<AggregatedWatcherHooksConfiguration.Builder> aggregatedWatcherHooks)
+            Action<AggregatedWatcherHooksConfiguration.Builder> aggregatedWatcherHooks,
+            long? iterationsCount = null,
+            TimeSpan? interval = null,
+            bool overrideCustomIntervals = false)
         {
             WardenName = wardenName;
             Watchers = watchers ?? Enumerable.Empty<IWatcherWithHooks>();
@@ -31,6 +41,9 @@ namespace Warden.Spawn.Configurations
             Hooks = hooks;
             GlobalWatcherHooks = globalWatcherHooks;
             AggregatedWatcherHooks = aggregatedWatcherHooks;
+            IterationsCount = iterationsCount;
+            Interval = interval.GetValueOrDefault();
+            OverrideCustomIntervals = overrideCustomIntervals;
         }
     }
 }

@@ -24,7 +24,8 @@ namespace Warden.Spawn.Configurations
             var aggregatedWatcherHooks = ConfigureAggregatedWatcherHooks(configuration.AggregatedWatcherHooks,
                 configuration.Integrations);
             var spawnConfiguration = new WardenSpawnConfigurationInstance(configuration.WardenName, watchers,
-                integrations, wardenHooks, globalWatcherHooks, aggregatedWatcherHooks);
+                integrations, wardenHooks, globalWatcherHooks, aggregatedWatcherHooks,
+                configuration.IterationsCount, configuration.Interval, configuration.OverrideCustomIntervals);
 
             return new WardenSpawn(spawnConfiguration);
         }

@@ -47,8 +47,9 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
 
         public IWardenSpawnConfiguration Read(string configuration)
         {
+            var basicConfiguration = JsonConvert.DeserializeObject<BasicWardenConfiguration>(configuration, _jsonSerializerSettings);
             var spawnConfiguration = JsonConvert.DeserializeObject<dynamic>(configuration, _jsonSerializerSettings);
-            var wardenName = spawnConfiguration.wardenName.ToString();
+            var wardenName = basicConfiguration.WardenName;
             var integrations = ResolveIntegrations(wardenName, spawnConfiguration.integrations);
             var watchers = ResolveWatchers(wardenName, spawnConfiguration.watchers, integrations);
             var hooks = ResolveHooks(wardenName, spawnConfiguration.hooks, integrations);
@@ -58,7 +59,16 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
                 integrations);
 
             return new WardenSpawnConfiguration(wardenName, watchers, integrations, hooks,
-                globalWatcherHooks, aggregatedWatcherHooks);
+                globalWatcherHooks, aggregatedWatcherHooks, basicConfiguration.IterationsCount,
+                basicConfiguration.Interval, basicConfiguration.OverrideCustomIntervals);
+        }
+
+        private class BasicWardenConfiguration
+        {
+            public string WardenName { get; set; }
+            public long? IterationsCount { get; set; }
+            public bool OverrideCustomIntervals { get; set; }
+            public TimeSpan Interval { get; set; }
         }
 
         private IEnumerable<IWatcherSpawnWithHooksConfiguration> ResolveWatchers(string wardenName,

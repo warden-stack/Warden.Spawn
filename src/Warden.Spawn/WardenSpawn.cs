@@ -1,4 +1,5 @@
-﻿using Warden.Core;
+﻿using System;
+using Warden.Core;
 using Warden.Spawn.Configurations;
 
 namespace Warden.Spawn
@@ -31,6 +32,11 @@ namespace Warden.Spawn
             wardenConfiguration.SetHooks(_configuration.Hooks);
             wardenConfiguration.SetGlobalWatcherHooks(_configuration.GlobalWatcherHooks);
             wardenConfiguration.SetAggregatedWatcherHooks(_configuration.AggregatedWatcherHooks);
+            if (_configuration.Interval > TimeSpan.Zero)
+                wardenConfiguration.WithInterval(_configuration.Interval, _configuration.OverrideCustomIntervals);
+            var iterationsCount = _configuration.IterationsCount.GetValueOrDefault();
+            if (iterationsCount > 0)
+                wardenConfiguration.SetIterationsCount(iterationsCount);
 
             return WardenInstance.Create(_configuration.WardenName, wardenConfiguration.Build());
         }
