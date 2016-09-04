@@ -26,7 +26,17 @@
       "group": "Websites",
       "configuration": {
         "url": "http://www.google.com",
-        "timeout": "00:00:05"
+        "timeout": "00:00:05",
+        "request": {
+          "method": "get",
+          "headers": [
+            {
+              "name": "User-Agent",
+              "value": "Warden Spawn"
+            }
+          ]
+        },
+        "skipStatusCodeValidation":  true 
       },
       "hooks": [
         {
