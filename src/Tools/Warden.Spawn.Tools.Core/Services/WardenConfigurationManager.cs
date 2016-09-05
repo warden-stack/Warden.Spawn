@@ -19,7 +19,7 @@ namespace Warden.Spawn.Tools.Core.Services
 
         public async Task<object> GetConfigurationAsync(string id, string token)
         {
-            var response = await _httpClient.GetAsync($"wardenconfigurations/{id}");
+            var response = await _httpClient.GetAsync($"warden/configurations/{id}?token={token}");
             if (!response.IsSuccessStatusCode)
                 return null;
 

@@ -68,8 +68,8 @@ namespace Warden.Spawn.Tools.Host
 
         private static async Task<string> GetConfigurationAsync(string id, string token)
         {
-            var service = new WardenConfigurationManager("http://localhost:20899/api/");
-            var configuration = await service.GetConfigurationAsync(id, token);
+            var wardenConfigurationManager = new WardenConfigurationManager("http://localhost:20899/");
+            var configuration = await wardenConfigurationManager.GetConfigurationAsync(id, token);
             if (configuration == null)
                 return string.Empty;
 

@@ -59,7 +59,7 @@ namespace Warden.Spawn.Configurations
             {
                 if (string.IsNullOrWhiteSpace(configuration))
                 {
-                    throw new ArgumentNullException("Configuration types can not be empty.",
+                    throw new ArgumentNullException("Configuration can not be empty.",
                         nameof(configuration));
                 }
 
