@@ -16,40 +16,42 @@ namespace Warden.Spawn.Integrations.Console
             _service = service;
         }
 
-        public Expression<Action<IWatcherCheck>> OnStart(object configuration)
+        public Expression<Action<IWatcherCheck>> OnStart(object configuration, HookCondition condition)
             => x => _service.PrintAsync(configuration);
 
-        public Expression<Func<IWatcherCheck, Task>> OnStartAsync(object configuration)
+        public Expression<Func<IWatcherCheck, Task>> OnStartAsync(object configuration, HookCondition condition)
             => x => _service.PrintAsync(configuration);
 
-        public Expression<Action<IWardenCheckResult>> OnSuccess(object configuration)
+        public Expression<Action<IWardenCheckResult>> OnSuccess(object configuration, HookCondition condition)
             => x => _service.PrintAsync(configuration);
 
-        public Expression<Func<IWardenCheckResult, Task>> OnSuccessAsync(object configuration)
+        public Expression<Func<IWardenCheckResult, Task>> OnSuccessAsync(object configuration, HookCondition condition)
             => x => _service.PrintAsync(configuration);
 
-        public Expression<Action<IWardenCheckResult>> OnFirstSuccess(object configuration)
+        public Expression<Action<IWardenCheckResult>> OnFirstSuccess(object configuration, HookCondition condition)
             => x => _service.PrintAsync(configuration);
 
-        public Expression<Func<IWardenCheckResult, Task>> OnFirstSuccessAsync(object configuration)
+        public Expression<Func<IWardenCheckResult, Task>> OnFirstSuccessAsync(object configuration,
+                HookCondition condition)
             => x => _service.PrintAsync(configuration);
 
-        public Expression<Action<IWardenCheckResult>> OnFailure(object configuration)
+        public Expression<Action<IWardenCheckResult>> OnFailure(object configuration, HookCondition condition)
             => x => _service.PrintAsync(configuration);
 
-        public Expression<Func<IWardenCheckResult, Task>> OnFailureAsync(object configuration)
+        public Expression<Func<IWardenCheckResult, Task>> OnFailureAsync(object configuration, HookCondition condition)
             => x => _service.PrintAsync(configuration);
 
-        public Expression<Action<IWardenCheckResult>> OnFirstFailure(object configuration)
+        public Expression<Action<IWardenCheckResult>> OnFirstFailure(object configuration, HookCondition condition)
             => x => _service.PrintAsync(configuration);
 
-        public Expression<Func<IWardenCheckResult, Task>> OnFirstFailureAsync(object configuration)
+        public Expression<Func<IWardenCheckResult, Task>> OnFirstFailureAsync(object configuration,
+                HookCondition condition)
             => x => _service.PrintAsync(configuration);
 
-        public Expression<Action<IWardenCheckResult>> OnCompleted(object configuration)
+        public Expression<Action<IWardenCheckResult>> OnCompleted(object configuration, HookCondition condition)
             => x => _service.PrintAsync(configuration);
 
-        public Expression<Func<IWardenCheckResult, Task>> OnCompletedAsync(object configuration)
+        public Expression<Func<IWardenCheckResult, Task>> OnCompletedAsync(object configuration, HookCondition condition)
             => x => _service.PrintAsync(configuration);
 
         public Expression<Action<Exception>> OnError(object configuration)

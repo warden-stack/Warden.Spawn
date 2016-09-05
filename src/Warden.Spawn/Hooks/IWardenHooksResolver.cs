@@ -16,7 +16,7 @@ namespace Warden.Spawn.Hooks
         Expression<Func<Exception, Task>> OnErrorAsync(object configuration);
         Expression<Action<long>> OnIterationStart(object configuration);
         Expression<Func<long, Task>> OnIterationStartAsync(object configuration);
-        Expression<Action<IWardenIteration>> OnIterationCompleted(object configuration);
-        Expression<Func<IWardenIteration, Task>> OnIterationCompletedAsync(object configuration);
+        Expression<Action<IWardenIteration>> OnIterationCompleted(object configuration, HookCondition condition);
+        Expression<Func<IWardenIteration, Task>> OnIterationCompletedAsync(object configuration, HookCondition condition);
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Warden.Spawn.Hooks;
-using Warden.Watchers;
 
 namespace Warden.Spawn.Integrations.SendGrid
 {
@@ -16,34 +15,44 @@ namespace Warden.Spawn.Integrations.SendGrid
             _service = service;
         }
 
-        public Expression<Action<IEnumerable<IWardenCheckResult>>> OnSuccess(object configuration)
+        public Expression<Action<IEnumerable<IWardenCheckResult>>> OnSuccess(object configuration,
+                HookCondition condition)
             => x => _service.SendMessageAsync(configuration);
 
-        public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnSuccessAsync(object configuration)
+        public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnSuccessAsync(object configuration,
+                HookCondition condition)
             => x => _service.SendMessageAsync(configuration);
 
-        public Expression<Action<IEnumerable<IWardenCheckResult>>> OnFirstSuccess(object configuration)
+        public Expression<Action<IEnumerable<IWardenCheckResult>>> OnFirstSuccess(object configuration,
+                HookCondition condition)
             => x => _service.SendMessageAsync(configuration);
 
-        public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnFirstSuccessAsync(object configuration)
+        public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnFirstSuccessAsync(object configuration,
+                HookCondition condition)
             => x => _service.SendMessageAsync(configuration);
 
-        public Expression<Action<IEnumerable<IWardenCheckResult>>> OnFailure(object configuration)
+        public Expression<Action<IEnumerable<IWardenCheckResult>>> OnFailure(object configuration,
+                HookCondition condition)
             => x => _service.SendMessageAsync(configuration);
 
-        public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnFailureAsync(object configuration)
+        public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnFailureAsync(object configuration,
+                HookCondition condition)
             => x => _service.SendMessageAsync(configuration);
 
-        public Expression<Action<IEnumerable<IWardenCheckResult>>> OnFirstFailure(object configuration)
+        public Expression<Action<IEnumerable<IWardenCheckResult>>> OnFirstFailure(object configuration,
+                HookCondition condition)
             => x => _service.SendMessageAsync(configuration);
 
-        public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnFirstFailureAsync(object configuration)
+        public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnFirstFailureAsync(object configuration,
+                HookCondition condition)
             => x => _service.SendMessageAsync(configuration);
 
-        public Expression<Action<IEnumerable<IWardenCheckResult>>> OnCompleted(object configuration)
+        public Expression<Action<IEnumerable<IWardenCheckResult>>> OnCompleted(object configuration,
+                HookCondition condition)
             => x => _service.SendMessageAsync(configuration);
 
-        public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnCompletedAsync(object configuration)
+        public Expression<Func<IEnumerable<IWardenCheckResult>, Task>> OnCompletedAsync(object configuration,
+                HookCondition condition)
             => x => _service.SendMessageAsync(configuration);
 
         public Expression<Action<IEnumerable<Exception>>> OnError(object configuration)

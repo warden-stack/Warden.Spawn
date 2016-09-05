@@ -44,8 +44,8 @@ namespace Warden.Spawn.Configurations
                 var configurator = Activator.CreateInstance(configurationType);
                 var method = configurator.GetType()
                     .GetMethod("Configure");
-                var integrationInstance =
-                    method.Invoke(configurator, new object[] {integration.Configuration}) as IIntegration;
+                var integrationInstance = method.Invoke(configurator,
+                    new object[] {integration.Configuration}) as IIntegration;
 
                 yield return integrationInstance;
             }
@@ -90,6 +90,7 @@ namespace Warden.Spawn.Configurations
             }
         }
 
+        //TODO: Refactor
         private Action<WatcherHooksConfiguration.Builder> ConfigureWatcherHooks(
             IEnumerable<IWatcherHookSpawnConfiguration> watcherConfigurations,
             IEnumerable<ISpawnIntegration> integrations)
@@ -121,40 +122,48 @@ namespace Warden.Spawn.Configurations
                 switch (config.Type)
                 {
                     case WatcherHookType.OnStart:
-                        onStart.Add(resolver.WatcherHooksResolver.OnStart(config.Configuration));
+                        onStart.Add(resolver.WatcherHooksResolver.OnStart(config.Configuration, config.Condition));
                         break;
                     case WatcherHookType.OnStartAsync:
-                        onStartAsync.Add(resolver.WatcherHooksResolver.OnStartAsync(config.Configuration));
+                        onStartAsync.Add(resolver.WatcherHooksResolver.OnStartAsync(config.Configuration,
+                            config.Condition));
                         break;
                     case WatcherHookType.OnSuccess:
-                        onSuccess.Add(resolver.WatcherHooksResolver.OnSuccess(config.Configuration));
+                        onSuccess.Add(resolver.WatcherHooksResolver.OnSuccess(config.Configuration, config.Condition));
                         break;
                     case WatcherHookType.OnSuccessAsync:
-                        onSuccessAsync.Add(resolver.WatcherHooksResolver.OnSuccessAsync(config.Configuration));
+                        onSuccessAsync.Add(resolver.WatcherHooksResolver.OnSuccessAsync(config.Configuration,
+                            config.Condition));
                         break;
                     case WatcherHookType.OnFirstSuccess:
-                        onFirstSuccess.Add(resolver.WatcherHooksResolver.OnFirstSuccess(config.Configuration));
+                        onFirstSuccess.Add(resolver.WatcherHooksResolver.OnFirstSuccess(config.Configuration,
+                            config.Condition));
                         break;
                     case WatcherHookType.OnFirstSuccessAsync:
-                        onFirstSuccessAsync.Add(resolver.WatcherHooksResolver.OnFirstSuccessAsync(config.Configuration));
+                        onFirstSuccessAsync.Add(resolver.WatcherHooksResolver.OnFirstSuccessAsync(config.Configuration,
+                            config.Condition));
                         break;
                     case WatcherHookType.OnFailure:
-                        onFailure.Add(resolver.WatcherHooksResolver.OnFailure(config.Configuration));
+                        onFailure.Add(resolver.WatcherHooksResolver.OnFailure(config.Configuration, config.Condition));
                         break;
                     case WatcherHookType.OnFailureAsync:
-                        onFailureAsync.Add(resolver.WatcherHooksResolver.OnFailureAsync(config.Configuration));
+                        onFailureAsync.Add(resolver.WatcherHooksResolver.OnFailureAsync(config.Configuration,
+                            config.Condition));
                         break;
                     case WatcherHookType.OnFirstFailure:
-                        onFirstFailure.Add(resolver.WatcherHooksResolver.OnFirstFailure(config.Configuration));
+                        onFirstFailure.Add(resolver.WatcherHooksResolver.OnFirstFailure(config.Configuration,
+                            config.Condition));
                         break;
                     case WatcherHookType.OnFirstFailureAsync:
-                        onFirstFailureAsync.Add(resolver.WatcherHooksResolver.OnFirstFailureAsync(config.Configuration));
+                        onFirstFailureAsync.Add(resolver.WatcherHooksResolver.OnFirstFailureAsync(config.Configuration,
+                            config.Condition));
                         break;
                     case WatcherHookType.OnCompleted:
-                        onCompleted.Add(resolver.WatcherHooksResolver.OnCompleted(config.Configuration));
+                        onCompleted.Add(resolver.WatcherHooksResolver.OnCompleted(config.Configuration, config.Condition));
                         break;
                     case WatcherHookType.OnCompletedAsync:
-                        onCompletedAsync.Add(resolver.WatcherHooksResolver.OnCompletedAsync(config.Configuration));
+                        onCompletedAsync.Add(resolver.WatcherHooksResolver.OnCompletedAsync(config.Configuration,
+                            config.Condition));
                         break;
                     case WatcherHookType.OnError:
                         onError.Add(resolver.WatcherHooksResolver.OnError(config.Configuration));
@@ -193,6 +202,7 @@ namespace Warden.Spawn.Configurations
             IEnumerable<IWatcherHookSpawnConfiguration> watcherConfigurations,
             IEnumerable<ISpawnIntegration> integrations) => ConfigureWatcherHooks(watcherConfigurations, integrations);
 
+        //TODO: Refactor
         private Action<AggregatedWatcherHooksConfiguration.Builder> ConfigureAggregatedWatcherHooks(
             IEnumerable<IWatcherHookSpawnConfiguration> watcherConfigurations,
             IEnumerable<ISpawnIntegration> integrations)
@@ -222,37 +232,44 @@ namespace Warden.Spawn.Configurations
                 switch (config.Type)
                 {
                     case WatcherHookType.OnSuccess:
-                        onSuccess.Add(resolver.AggregatedWatcherHooksResolver.OnSuccess(config.Configuration));
+                        onSuccess.Add(resolver.AggregatedWatcherHooksResolver.OnSuccess(config.Configuration,
+                            config.Condition));
                         break;
                     case WatcherHookType.OnSuccessAsync:
-                        onSuccessAsync.Add(resolver.AggregatedWatcherHooksResolver.OnSuccessAsync(config.Configuration));
+                        onSuccessAsync.Add(resolver.AggregatedWatcherHooksResolver.OnSuccessAsync(config.Configuration,
+                            config.Condition));
                         break;
                     case WatcherHookType.OnFirstSuccess:
-                        onFirstSuccess.Add(resolver.AggregatedWatcherHooksResolver.OnFirstSuccess(config.Configuration));
+                        onFirstSuccess.Add(resolver.AggregatedWatcherHooksResolver.OnFirstSuccess(config.Configuration,
+                            config.Condition));
                         break;
                     case WatcherHookType.OnFirstSuccessAsync:
-                        onFirstSuccessAsync.Add(
-                            resolver.AggregatedWatcherHooksResolver.OnFirstSuccessAsync(config.Configuration));
+                        onFirstSuccessAsync.Add(resolver.AggregatedWatcherHooksResolver
+                            .OnFirstSuccessAsync(config.Configuration, config.Condition));
                         break;
                     case WatcherHookType.OnFailure:
-                        onFailure.Add(resolver.AggregatedWatcherHooksResolver.OnFailure(config.Configuration));
+                        onFailure.Add(resolver.AggregatedWatcherHooksResolver.OnFailure(config.Configuration,
+                            config.Condition));
                         break;
                     case WatcherHookType.OnFailureAsync:
-                        onFailureAsync.Add(resolver.AggregatedWatcherHooksResolver.OnFailureAsync(config.Configuration));
+                        onFailureAsync.Add(resolver.AggregatedWatcherHooksResolver.OnFailureAsync(config.Configuration,
+                            config.Condition));
                         break;
                     case WatcherHookType.OnFirstFailure:
-                        onFirstFailure.Add(resolver.AggregatedWatcherHooksResolver.OnFirstFailure(config.Configuration));
+                        onFirstFailure.Add(resolver.AggregatedWatcherHooksResolver.OnFirstFailure(config.Configuration,
+                            config.Condition));
                         break;
                     case WatcherHookType.OnFirstFailureAsync:
-                        onFirstFailureAsync.Add(
-                            resolver.AggregatedWatcherHooksResolver.OnFirstFailureAsync(config.Configuration));
+                        onFirstFailureAsync.Add(resolver.AggregatedWatcherHooksResolver
+                            .OnFirstFailureAsync(config.Configuration, config.Condition));
                         break;
                     case WatcherHookType.OnCompleted:
-                        onCompleted.Add(resolver.AggregatedWatcherHooksResolver.OnCompleted(config.Configuration));
+                        onCompleted.Add(resolver.AggregatedWatcherHooksResolver.OnCompleted(config.Configuration,
+                            config.Condition));
                         break;
                     case WatcherHookType.OnCompletedAsync:
-                        onCompletedAsync.Add(
-                            resolver.AggregatedWatcherHooksResolver.OnCompletedAsync(config.Configuration));
+                        onCompletedAsync.Add(resolver.AggregatedWatcherHooksResolver
+                            .OnCompletedAsync(config.Configuration, config.Condition));
                         break;
                     case WatcherHookType.OnError:
                         onError.Add(resolver.AggregatedWatcherHooksResolver.OnError(config.Configuration));
@@ -264,8 +281,8 @@ namespace Warden.Spawn.Configurations
                         onFirstError.Add(resolver.AggregatedWatcherHooksResolver.OnFirstError(config.Configuration));
                         break;
                     case WatcherHookType.OnFirstErrorAsync:
-                        onFirstErrorAsync.Add(
-                            resolver.AggregatedWatcherHooksResolver.OnFirstErrorAsync(config.Configuration));
+                        onFirstErrorAsync.Add(resolver.AggregatedWatcherHooksResolver
+                            .OnFirstErrorAsync(config.Configuration));
                         break;
                 }
             }
@@ -286,6 +303,7 @@ namespace Warden.Spawn.Configurations
                 .OnFirstErrorAsync(onFirstErrorAsync.ToArray());
         }
 
+        //TODO: Refactor
         private Action<WardenHooksConfiguration.Builder> ConfigureHooks(
             IEnumerable<IWardenHookSpawnConfiguration> wardenHookConfigurations,
             IEnumerable<ISpawnIntegration> integrations)
@@ -344,11 +362,12 @@ namespace Warden.Spawn.Configurations
                             resolver.WardenHooksResolver.OnIterationStartAsync(config.Configuration));
                         break;
                     case WardenHookType.OnIterationCompleted:
-                        onIterationCompleted.Add(resolver.WardenHooksResolver.OnIterationCompleted(config.Configuration));
+                        onIterationCompleted.Add(resolver.WardenHooksResolver.OnIterationCompleted(
+                            config.Configuration, config.Condition));
                         break;
                     case WardenHookType.OnIterationCompletedAsync:
-                        onIterationCompletedAsync.Add(
-                            resolver.WardenHooksResolver.OnIterationCompletedAsync(config.Configuration));
+                        onIterationCompletedAsync.Add(resolver.WardenHooksResolver
+                            .OnIterationCompletedAsync(config.Configuration, config.Condition));
                         break;
                 }
             }

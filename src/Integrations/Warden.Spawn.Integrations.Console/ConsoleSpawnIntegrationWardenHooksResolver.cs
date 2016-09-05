@@ -38,16 +38,17 @@ namespace Warden.Spawn.Integrations.Console
         public Expression<Func<Exception, Task>> OnErrorAsync(object configuration)
             => x => _service.PrintAsync(configuration);
 
-        public Expression<Action<IWardenIteration>> OnIterationCompleted(object configuration)
-            => x => _service.PrintAsync(configuration);
-
-        public Expression<Func<IWardenIteration, Task>> OnIterationCompletedAsync(object configuration)
-            => x => _service.PrintAsync(configuration);
-
         public Expression<Action<long>> OnIterationStart(object configuration)
             => x => _service.PrintAsync(configuration);
 
         public Expression<Func<long, Task>> OnIterationStartAsync(object configuration)
+            => x => _service.PrintAsync(configuration);
+
+        public Expression<Action<IWardenIteration>> OnIterationCompleted(object configuration, HookCondition condition)
+            => x => _service.PrintAsync(configuration);
+
+        public Expression<Func<IWardenIteration, Task>> OnIterationCompletedAsync(object configuration,
+                HookCondition condition)
             => x => _service.PrintAsync(configuration);
     }
 }

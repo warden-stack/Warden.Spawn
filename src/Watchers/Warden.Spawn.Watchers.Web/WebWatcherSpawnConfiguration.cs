@@ -10,17 +10,5 @@ namespace Warden.Spawn.Watchers.Web
         public HttpRequestDefinition Request { get; set; }
         public TimeSpan Timeout { get; set; }
         public bool SkipStatusCodeValidation { get; set; }
-
-        protected WebWatcherSpawnConfiguration()
-        {
-        }
-
-        public WebWatcherSpawnConfiguration(string url)
-        {
-            if (string.IsNullOrWhiteSpace(url))
-                throw new ArgumentException("URL can not be empty.", nameof(url));
-
-            Url = url;
-        }
     }
 }

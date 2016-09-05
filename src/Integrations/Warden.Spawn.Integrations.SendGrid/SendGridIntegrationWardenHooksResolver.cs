@@ -44,10 +44,11 @@ namespace Warden.Spawn.Integrations.SendGrid
         public Expression<Func<long, Task>> OnIterationStartAsync(object configuration)
             => x => _service.SendMessageAsync(configuration);
 
-        public Expression<Action<IWardenIteration>> OnIterationCompleted(object configuration)
+        public Expression<Action<IWardenIteration>> OnIterationCompleted(object configuration, HookCondition condition)
             => x => _service.SendMessageAsync(configuration);
 
-        public Expression<Func<IWardenIteration, Task>> OnIterationCompletedAsync(object configuration)
+        public Expression<Func<IWardenIteration, Task>> OnIterationCompletedAsync(object configuration,
+                HookCondition condition)
             => x => _service.SendMessageAsync(configuration);
     }
 }
