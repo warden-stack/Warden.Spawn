@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Warden.Core;
 using Warden.Integrations;
+using Warden.Spawn.Configurations.Logger;
 using Warden.Watchers;
 
 namespace Warden.Spawn.Configurations
@@ -14,6 +15,7 @@ namespace Warden.Spawn.Configurations
         public long? IterationsCount { get; protected set; }
         public bool OverrideCustomIntervals { get; protected set; }
         public TimeSpan Interval { get; protected set; }
+        public WardenLoggerConfiguration Logger { get; protected set; }
         public IEnumerable<IWatcherWithHooks> Watchers { get; protected set; }
         public IEnumerable<IIntegration> Integrations { get; protected set; }
         public Action<WardenHooksConfiguration.Builder> Hooks { get; }
@@ -33,7 +35,8 @@ namespace Warden.Spawn.Configurations
             Action<AggregatedWatcherHooksConfiguration.Builder> aggregatedWatcherHooks,
             long? iterationsCount = null,
             TimeSpan? interval = null,
-            bool overrideCustomIntervals = false)
+            bool overrideCustomIntervals = false,
+            WardenLoggerConfiguration logger = null)
         {
             WardenName = wardenName;
             Watchers = watchers ?? Enumerable.Empty<IWatcherWithHooks>();
@@ -44,6 +47,7 @@ namespace Warden.Spawn.Configurations
             IterationsCount = iterationsCount;
             Interval = interval.GetValueOrDefault();
             OverrideCustomIntervals = overrideCustomIntervals;
+            Logger = logger;
         }
     }
 }

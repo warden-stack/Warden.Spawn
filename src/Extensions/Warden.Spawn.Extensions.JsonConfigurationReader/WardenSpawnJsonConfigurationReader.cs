@@ -4,6 +4,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Warden.Spawn.Configurations;
+using Warden.Spawn.Configurations.Logger;
 using Warden.Spawn.Hooks;
 using Warden.Spawn.Security;
 
@@ -60,7 +61,8 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
 
             return new WardenSpawnConfiguration(wardenName, watchers, integrations, hooks,
                 globalWatcherHooks, aggregatedWatcherHooks, basicConfiguration.IterationsCount,
-                basicConfiguration.Interval, basicConfiguration.OverrideCustomIntervals);
+                basicConfiguration.Interval, basicConfiguration.OverrideCustomIntervals,
+                basicConfiguration.Logger);
         }
 
         private class BasicWardenConfiguration
@@ -69,6 +71,7 @@ namespace Warden.Spawn.Extensions.JsonConfigurationReader
             public long? IterationsCount { get; set; }
             public bool OverrideCustomIntervals { get; set; }
             public TimeSpan Interval { get; set; }
+            public WardenLoggerConfiguration Logger { get; set; }
         }
 
         private IEnumerable<IWatcherSpawnWithHooksConfiguration> ResolveWatchers(string wardenName,

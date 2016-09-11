@@ -1,6 +1,13 @@
 ﻿{
   "wardenName": "Warden Spawn",
   "interval": "00:00:03",
+  "logger": {
+    "type": "console",
+    "configuration": {
+      "useColors": true,
+      "minLevel":  "all"  
+    }  
+  }, 
   "integrations": [
     {
       "type": "sendGrid",
