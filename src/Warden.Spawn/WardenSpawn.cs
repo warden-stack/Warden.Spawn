@@ -38,10 +38,10 @@ namespace Warden.Spawn
             if (iterationsCount > 0)
                 wardenConfiguration.SetIterationsCount(iterationsCount);
 
-            //TODO: Configure logger
             if (_configuration.Logger?.Type?.ToLowerInvariant() == "console")
             {
-                
+                var loggerConfig = _configuration.Logger.Configuration;
+                wardenConfiguration.WithConsoleLogger(loggerConfig.MinLevel, loggerConfig.UseColors);
             }
 
             return WardenInstance.Create(_configuration.WardenName, wardenConfiguration.Build());

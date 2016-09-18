@@ -8,9 +8,9 @@
     "licenseUrl": "https://github.com/warden-stack/Warden-Spawn/blob/master/LICENSE"
   },
   "dependencies": {
-    "Warden": "1.2.1",
+    "Warden": "1.3.0",
     "Warden.Spawn": "1.0.0",
-    "Warden.Integrations.SendGrid": "1.2.1"
+    "Warden.Integrations.SendGrid": "1.3.0"
   },
   "frameworks": {
     "net461": { }

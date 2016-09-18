@@ -4,7 +4,7 @@ using Rebus.Config;
 using Rebus.Routing.TypeBased;
 using Rebus.Transport.Msmq;
 using Rebus.Logging;
-using Warden.Bus.Commands;
+using Warden.Services.Spawn.Commands;
 using Warden.Spawn.Tools.Supervisor.Handlers;
 
 namespace Warden.Spawn.Tools.Supervisor
@@ -19,14 +19,14 @@ namespace Warden.Spawn.Tools.Supervisor
             using (var activator = new BuiltinHandlerActivator())
             {
                 Console.Title = "Warden.Spawn.Tools.Supervisor";
-                activator.Register((bus, message) => new SpawnWardenHandler(bus, WardenHostPath));
+                activator.Register((bus, message) => new RunWardenProcessHandler(bus, WardenHostPath));
                 Configure.With(activator)
-                    .Logging(l => l.ColoredConsole(minLevel: LogLevel.Warn))
-                    .Transport(t => t.UseMsmq("warden-supervisor"))
-                    .Routing(r => r.TypeBased().MapAssemblyOf<SpawnWarden>("warden"))
+                    .Logging(l => l.ColoredConsole(minLevel: LogLevel.Debug))
+                    .Transport(t => t.UseMsmq("Warden.Spawn.Tools.Supervisor"))
+                    .Routing(r => r.TypeBased().Map<RunWardenProcess>("Warden.Services.Spawn"))
                     .Start();
 
-                activator.Bus.Subscribe<SpawnWarden>().Wait();
+                activator.Bus.Subscribe<RunWardenProcess>().Wait();
                 Console.WriteLine("Press enter to quit");
                 Console.ReadLine();
             }

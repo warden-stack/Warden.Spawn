@@ -1,4 +1,6 @@
-﻿namespace Warden.Spawn.Configurations.Logger
+﻿using Warden.Utils;
+
+namespace Warden.Spawn.Configurations.Logger
 {
     public class WardenLoggerConfiguration
     {
@@ -8,9 +10,7 @@
         public class InternalConfiguration
         {
             public bool UseColors { get; set; }
-
-            //TODO: Change type of the min level of Warden Logger.
-            public string MinLevel { get; set; }
+            public WardenLoggerLevel MinLevel { get; set; }
         }
     }
 }
