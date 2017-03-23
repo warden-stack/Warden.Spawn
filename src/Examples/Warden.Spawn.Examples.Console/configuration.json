@@ -32,7 +32,7 @@
       "name": "My Web Watcher",
       "group": "Websites",
       "configuration": {
-        "url": "http://www.google.com",
+        "url": "https://getwarden.net",
         "timeout": "00:00:05",
         "request": {
           "method": "get",

@@ -1,9 +1,0 @@
-﻿{
-  "version": "1.0.0-*",
-  "dependencies": {
-    "Warden.Spawn": "1.0.0"
-  },
-  "frameworks": {
-    "net461": {}
-  }
-}

@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Warden Spawn Host Tool.</Description>
+    <Authors>Piotr Gankiewicz</Authors>
+    <TargetFramework>net461</TargetFramework>
+    <AssemblyName>Warden.Spawn.Tools.Host</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>Warden.Spawn.Tools.Host</PackageId>
+    <PackageTags>Warden;Warden Spawn</PackageTags>
+    <PackageProjectUrl>https://getwarden.net</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/warden-stack/Warden/blob/master/LICENSE</PackageLicenseUrl>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Warden.Spawn.Tools.Core/Warden.Spawn.Tools.Core.csproj" />
+    <ProjectReference Include="../../Warden.Spawn/Warden.Spawn.csproj" />
+    <ProjectReference Include="../../Extensions/Warden.Spawn.Extensions.JsonConfigurationReader/Warden.Spawn.Extensions.JsonConfigurationReader.csproj" />
+    <ProjectReference Include="../../Extensions/Warden.Spawn.Extensions.Security/Warden.Spawn.Extensions.Security.csproj" />
+    <ProjectReference Include="../../Extensions/Warden.Spawn.Extensions.SqlTde/Warden.Spawn.Extensions.SqlTde.csproj" />
+    <ProjectReference Include="../../Integrations/Warden.Spawn.Integrations.SendGrid/Warden.Spawn.Integrations.SendGrid.csproj" />
+    <ProjectReference Include="../../Integrations/Warden.Spawn.Integrations.Console/Warden.Spawn.Integrations.Console.csproj" />
+    <ProjectReference Include="../../Watchers/Warden.Spawn.Watchers.Web/Warden.Spawn.Watchers.Web.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

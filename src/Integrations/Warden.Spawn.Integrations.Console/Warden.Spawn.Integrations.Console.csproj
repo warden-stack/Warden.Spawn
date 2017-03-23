@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Warden Spawn SendGrid integration extension.</Description>
+    <Authors>Piotr Gankiewicz</Authors>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <AssemblyName>Warden.Spawn.Integrations.Console</AssemblyName>
+    <PackageId>Warden.Spawn.Integrations.Console</PackageId>
+    <PackageTags>Warden;Warden Spawn</PackageTags>
+    <PackageProjectUrl>https://getwarden.net</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/warden-stack/Warden-Spawn/blob/master/LICENSE</PackageLicenseUrl>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../Warden.Spawn/Warden.Spawn.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Linq" Version="4.3.0" />
+    <PackageReference Include="Warden" Version="1.3.2" />
+  </ItemGroup>
+
+</Project>

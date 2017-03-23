@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Warden Spawn Supervisor Tool.</Description>
+    <Authors>Piotr Gankiewicz</Authors>
+    <TargetFramework>net461</TargetFramework>
+    <AssemblyName>Warden.Spawn.Tools.Supervisor</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>Warden.Spawn.Tools.Supervisor</PackageId>
+    <PackageTags>Warden;Warden Spawn</PackageTags>
+    <PackageProjectUrl>https://getwarden.net</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/warden-stack/Warden/blob/master/LICENSE</PackageLicenseUrl>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Warden.Spawn.Tools.Core/Warden.Spawn.Tools.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Rebus" Version="0.99.73" />
+    <PackageReference Include="System.Net.Http" Version="4.1.1" />
+    <PackageReference Include="Warden.Services" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

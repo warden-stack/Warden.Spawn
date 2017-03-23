@@ -2,10 +2,9 @@
 using System.Threading.Tasks;
 using Warden.Spawn.Configurations;
 using Warden.Spawn.Extensions.JsonConfigurationReader;
-using Warden.Spawn.Extensions.Security;
-using Warden.Spawn.Extensions.SqlTde;
 using Warden.Spawn.Integrations.Console;
 using Warden.Spawn.Integrations.SendGrid;
+using Warden.Spawn.Security;
 using Warden.Spawn.Watchers.Web;
 
 namespace Warden.Spawn.Examples.Console
@@ -14,15 +13,15 @@ namespace Warden.Spawn.Examples.Console
     {
         public static void Main(string[] args)
         {
-            var encrypter = new Encrypter("abcdefgh12345678");
-            var credentialName = "Password";
-            var credentialValue = "test";
-            var connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=WardenSpawn;Integrated Security=True";
-            var credentialsManager = new SqlTdeCredentialsManager(connectionString, encrypter);
-            var wardenName = "Warden Spawn";
-            var integrationName = "console";
-            credentialsManager.Save(wardenName, credentialName, credentialValue, integration: integrationName);
-            var credentialsConfigurator = new CredentialsConfigurator(credentialsManager);
+            // var encrypter = new Encrypter("abcdefgh12345678");
+            // var credentialName = "Password";
+            // var credentialValue = "test";
+            // var connectionString = @"Data Source=.\SQLEXPRESS;Initial Catalog=WardenSpawn;Integrated Security=True";
+            // var credentialsManager = new SqlTdeCredentialsManager(connectionString, encrypter);
+            // var wardenName = "Warden Spawn";
+            // var integrationName = "console";
+            // credentialsManager.Save(wardenName, credentialName, credentialValue, integration: integrationName);
+            var credentialsConfigurator = new DefaultCredentialsConfigurator();
 
             var configurationReader = WardenSpawnJsonConfigurationReader
                 .Create()

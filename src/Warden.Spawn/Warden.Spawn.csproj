@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Warden Spawn allows to create the Warden instance by using human readable configuration files.</Description>
+    <Authors>Piotr Gankiewicz</Authors>
+    <TargetFrameworks>netcoreapp1.1</TargetFrameworks>
+    <AssemblyName>Warden.Spawn</AssemblyName>
+    <PackageId>Warden.Spawn</PackageId>
+    <PackageTags>Warden;Warden Spawn</PackageTags>
+    <PackageProjectUrl>https://getwarden.net</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/warden-stack/Warden-Spawn/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">$(PackageTargetFallback);dotnet5.6;dnxcore50</PackageTargetFallback>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Warden" Version="1.3.2" />
+    <PackageReference Include="System.Reflection" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.3.0" />
+    <PackageReference Include="System.Linq" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>
